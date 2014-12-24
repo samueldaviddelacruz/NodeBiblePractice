@@ -18,10 +18,12 @@ app.use(CookieParser())
 // auth.init(app);
 
 // controllers.init(app);
-// app.get("/api/users", function(req, res) {
-//     res.set("Content-Type", "application/json");
-//     res.send({ name: "Samy", isValid: true, group: "Admin" });
-// });
+app.get("/api/users", function(req, res) {
+
+    res.set("Content-Type", "application/json");
+    res.send({ name: "Samy", isValid: true, group: "Admin" });
+    
+});
 var server = http.createServer(app);
 server.listen(3500);
 
