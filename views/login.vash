@@ -1,0 +1,26 @@
+@html.extend('layout',function(model){
+
+@html.block("body",function(model){
+
+<h3>Login</h3>
+@if (model.message){
+    
+    <p>@model.message</p>
+}
+    <div>
+     
+       
+        <form action="/login" method="post" role="form">
+             <label> username :</label> 
+            <input type="text" name="username" placeholder = "username"/><br>
+             <label> password :</label> 
+            <input type="text" name="password" placeholder = "Password"/><br>
+            <input type="submit" value="Login" />
+        </form>
+        <!--     <a href="/">home/a>  -->
+     
+    </div>
+
+})
+
+})

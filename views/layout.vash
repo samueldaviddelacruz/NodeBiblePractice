@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+<title>@model.title</title>
+ 
+    @html.block("head")
+</head>
+<body>
+<div>
+    <nav>
+  <!-- <a href="/">Home</a>  -->
+  <a href="/register">Register|</a> 
+  @if(model.user){
+     <a href="/logout">Logout</a> 
+  }
+ 
+
+    </nav>
+    <div>@model.title</div>
+    @if(model.user){
+     <div>Welcome! : @model.user.name</div>
+ }
+@html.block("body")
+
+    <script src="/lib/angular/angular.min.js"></script>
+
+    @html.block("scripts")
+</div>
+</body>
+</html>

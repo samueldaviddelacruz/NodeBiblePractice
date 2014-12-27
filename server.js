@@ -1,7 +1,8 @@
 var http = require('http');
+var request = require("request")
 var express = require('express');
 var app = express();
-//var controllers = require('./controllers');
+var controllers = require('./controllers');
 app.set("view engine", "vash");//set view engine
 app.use(express.static(__dirname + "/public"));
 //opt into services
@@ -14,16 +15,11 @@ app.use(bodyParser.json());
 app.use(expressSession({secret:"thesecret"}))
 app.use(flash())
 app.use(CookieParser())
-// var auth = require('./auth')
-// auth.init(app);
+var auth = require('./auth')
+auth.init(app);
 
-// controllers.init(app);
-app.get("/api/users", function(req, res) {
+controllers.init(app);
 
-    res.set("Content-Type", "application/json");
-    res.send({ name: "Samy", isValid: true, group: "Admin" });
-    
-});
 var server = http.createServer(app);
 server.listen(3500);
 

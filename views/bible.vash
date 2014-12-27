@@ -1,0 +1,28 @@
+@html.extend('layout',function(model){
+@html.block("scripts",function(model){
+<script src="/js/BibleApp.js"></script>
+
+})
+@html.block("body",function(model){
+
+<div ng-app="bibleApp" >
+ 
+<div ng-controller="bibleController as bible">
+  <p>Soon Bible Stuff here!</p>
+  Bible Books!:
+ <select ng-model="bible.selectedBook" ng-options="book.name for book in bible.books"></select><br>
+
+ 	<div ng-repeat='chapter in bible.selectedBook.chapters' ng-click="bible.ListVerses(chapter)">
+ 		{{chapter.id}}
+ 		<div ng-repeat='verse in chapter.verses'>
+ 			
+ 			<div ng-bind-html="bible.renderHtml(verse.text)"></div>
+ 		</div>
+ 	</div>
+
+  </div>   
+</div>
+})
+
+})
+

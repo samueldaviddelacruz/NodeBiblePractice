@@ -1,0 +1,39 @@
+@html.extend('layout',function(model){
+
+@html.block("body",function(model){
+
+<h3>Register</h3>
+@if (model.message){
+    
+    <p>@model.message</p>
+}
+    <div>
+     
+       
+        <form action="/register" method="post" role="form">
+          <label> Name :</label>: 
+            <input type="text" name="name" placeholder="Your Name here"/><br>
+              <label> email :</label>: 
+            <input type="text" name="email" placeholder = "Your email"/><br>
+             <label> username :</label>: 
+            <input type="text" name="username" placeholder = "username"/><br>
+             <label> password :</label>: 
+            <input type="text" name="password" placeholder = "Password"/><br>
+            <input type="submit" value="Register" />
+        </form>
+
+
+        @if(model.user){
+         <a href="/">Back to Bible!</a>
+        }else{
+      <a href="/">Login</a><label> if you already have an account</label>
+        }
+
+    
+  
+     
+    </div>
+
+})
+
+})
