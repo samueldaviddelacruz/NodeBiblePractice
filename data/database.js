@@ -1,7 +1,7 @@
 (function (database) {
 
-    var mongodb = require("mongodb")
-    var mongoUrl = "mongodb://ingsamy:mega007@ds059519.mongolab.com:59519/mongolabdb"
+    var mongodb = require("mongodb");
+    var mongoUrl = "mongodb://ingsamy:mega007@ds059519.mongolab.com:59519/mongolabdb";
     var theDb = null;
     database.getDb = function (next){
         if (!theDb) {

@@ -20,10 +20,11 @@
     @if(model.user){
      <div>Welcome! : @model.user.name</div>
  }
+
 @html.block("body")
 
     <script src="/lib/angular/angular.min.js"></script>
-
+     <link href="/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     @html.block("scripts")
 </div>
 </body>

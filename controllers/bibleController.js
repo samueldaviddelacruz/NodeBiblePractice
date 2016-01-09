@@ -53,7 +53,11 @@ request({
      app.get("/bible", 
 
             auth.ensureAuthenticated,function (req, res){
+
+
             res.render("bible", { title: 'Bible!',  user:req.user });
+
+
         })
 
 
