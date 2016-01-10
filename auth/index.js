@@ -133,55 +133,68 @@
 
 		app.post("/register", function(req, res, next) {
 
-			var registersuccesful = false;
+
 			var salt = hasher.createSalt();
 
-			var user = {
+			var _newuser = {
 				name: req.body.name,
 				email: req.body.email,
 				username: req.body.username.toUpperCase(),
 				passwordHash: hasher.computeHash(req.body.password, salt),
-				salt: salt
+				salt: salt,
+
 
 			};
 
-			data.addUser(user, function(err) {
-				if (err) {
-					console.log(err);
-					req.flash("registrationError", "Could Not save User to Database");
+			data.getUser(_newuser.username,function (err,user){
+
+				if(user){
+					req.flash("registrationError",user.username + " User Already Exists" );
 					res.redirect("/register")
 
-				} else {
-
-
-					var authFunction = passport.authenticate("local", function(err, user, info) {
-
+				}else{
+					console.log(_newuser);
+					data.addUser(_newuser, function(err) {
 						if (err) {
-							next(err)
+							console.log(err + 'sdsd');
+							req.flash("registrationError", "Could Not save User to Database");
+							res.redirect("/register")
+
 						} else {
 
 
-							req.logIn(user, function(err) {
-								if (err) {
+							var authFunction = passport.authenticate("local", function(err, user, info) {
 
+								if (err) {
 									next(err)
 								} else {
-									res.redirect("/bible")
 
+
+									req.logIn(user, function(err) {
+										if (err) {
+
+											next(err)
+										} else {
+											res.redirect("/bible")
+
+										}
+									})
 								}
 							})
+
+							authFunction(req, res, next)
+
 						}
+
+
 					})
-
-					authFunction(req, res, next)
-
 				}
 
+			});
 
-			})
 
 
-		})
+		});
 
 
 		app.get('/logout', function(req, res) {
