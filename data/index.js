@@ -1,36 +1,43 @@
-(function (data) {
+(function(data) {
 
- var database = require("./database");
-  
+    var database = require("./database");
 
 
-data.getUser = function(username,next){
 
- database.getDb(function (err, db){
+    data.getUser = function(username, next) {
+
+        database.getDb(function(err, db) {
             if (err) {
                 next(err)
-            }else{
+            } else {
+
+                //db.usuarios.findOne({username:username.toUpperCase()},function(user,next){
+                //    console.log(user);
+                //
+                //});
+                db.usuarios.find({
+                    username: username.toUpperCase()
+                }).limit(1).next(next);
 
 
-            db.usuarios.findOne({username:username.toUpperCase()},next);
+                //db.usuarios.findOne({username:username.toUpperCase()},next);
 
             }
-            
-}
-)
+
+        })
 
 
-}
+    }
 
 
-data.addUser = function(user,next){
- 
+    data.addUser = function(user, next) {
 
- database.getDb(function (err, db){
+
+        database.getDb(function(err, db) {
             if (err) {
                 console.log(err);
                 next(err);
-            }else{
+            } else {
 
                 //db.usuarios.findOne({username:user.username.toUpperCase()},function(err,user){
                 //    if(user){
@@ -40,15 +47,14 @@ data.addUser = function(user,next){
                 //    }
                 //
                 //});
-                db.usuarios.insert(user,next);
+                db.usuarios.insert(user, next);
 
 
-            }       
+            }
 
-}
-)
+        })
 
 
-}
+    }
 
 })(module.exports);
