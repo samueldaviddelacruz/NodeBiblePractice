@@ -7,18 +7,43 @@
 
 <div ng-app="bibleApp" >
  
-<div ng-controller="bibleController as bible">
-  <p>Soon Bible Stuff here!</p>
-  Bible Books!:
- <select ng-model="bible.selectedBook" ng-options="book.name for book in bible.books"></select><br>
+<div ng-controller="bibleController as bible" class="row">
 
- 	<div ng-repeat='chapter in bible.selectedBook.chapters' ng-click="bible.ListVerses(chapter)">
- 		{{chapter.id}}
- 		<div ng-repeat='verse in chapter.verses'>
- 			
+
+
+
+
+ <div class="col-sm-4" style="overflow-y: auto;max-height: 800px;">
+   <p>Soon Bible Stuff here!</p>
+  Bible Books!:
+  <div ng-hide="bible.books.length > 0">
+      <div class="text-center">
+          <i class="fa fa-circle-o-notch fa-spin"></i> Loading...
+      </div>
+  </div>
+   <select ng-show="bible.books.length > 0" ng-model="bible.selectedBook" ng-options="book.name for book in bible.books" class="form-control"></select><br>
+ <div class="list-group">
+ <a href="#" ng-repeat='chapter in bible.selectedBook.chapters' ng-click="bible.ListVerses(chapter)" class="list-group-item">
+ {{chapter.chapter}}
+ </a>
+ </div>
+ </div>
+
+
+
+<div class="col-md-6 container" style=" overflow-y: auto; max-height: 800px;">
+<div ng-show="bible.IsLoadingVerses">
+    <div class="text-center">
+        <i class="fa fa-circle-o-notch fa-spin"></i> Loading...
+    </div>
+</div>
+
+<div ng-repeat='verse in bible.selectedChapter.verses' >
+
  			<div ng-bind-html="bible.renderHtml(verse.text)"></div>
  		</div>
- 	</div>
+</div>
+
 
   </div>   
 </div>

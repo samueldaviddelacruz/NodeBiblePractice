@@ -7,24 +7,32 @@
 </head>
 <body>
 <div>
-    <nav>
-  <!-- <a href="/">Home</a>  -->
-  <a href="/register">Register|</a> 
-  @if(model.user){
-     <a href="/logout">Logout</a> 
-  }
- 
+
+<nav class="navbar navbar-default">
+<div class="container-fluid">
+    <div class="navbar-header">
+        @if(model.user){
+       <span class="navbar-brand">Welcome! : @model.user.name </span>
+      }
+    </div>
+    <ul class="nav navbar-nav">
+
+      <li>  <a href="/register">Register</a> </li>
+      @if(model.user){
+          <li><a href="/logout">Logout</a> </li>
+
+       }
+    </ul>
+  </div>
 
     </nav>
-    <div>@model.title</div>
-    @if(model.user){
-     <div>Welcome! : @model.user.name</div>
- }
+
 
 @html.block("body")
 
     <script src="/lib/angular/angular.min.js"></script>
      <link href="/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+      <link href="/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
     @html.block("scripts")
 </div>
 </body>
