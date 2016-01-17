@@ -2,9 +2,9 @@
 app = angular.module('bibleApp',[]);
 
 var bibleController = function($http,$sce,$q){
-console.log('angular ready to rumble')
+console.log('angular ready to rumble');
 var bible = this;
-bible.IsLoadingVerses=false;
+    bible.IsLoadingVerses=false;
     bible.IsOnFullSearch=false;
 
  bible.renderHtml = function (htmlCode) {
@@ -14,6 +14,7 @@ bible.IsLoadingVerses=false;
         };
 bible.ListVerses = function(chapter){
     console.log(chapter);
+    //added a requests array to q and execute all requests
     var requestQ = [];
     bible.selectedChapter = chapter;
     bible.selectedChapter.verses = [];
@@ -22,8 +23,9 @@ bible.ListVerses = function(chapter){
 
         bible.selectedChapter.verses = result.data.response.verses;
     });
+    //push http request into array
     requestQ.push(getVerseRequest);
-
+//send array to $q to execute all http requests, then do something after they are all complete
     $q.all(requestQ).then(function(values){
 
         bible.IsLoadingVerses = false;
@@ -45,10 +47,11 @@ bible.ListVerses = function(chapter){
         bible.wordCount = 0;
         bible.foundWords = null;
 
-    }
+    };
 bible.searchWholeBook = function(){
     bible.selectedChapter = {};
     bible.selectedChapter.verses = [];
+    //added a requests array to q and execute all requests
     var requestQ = [];
     bible.IsOnFullSearch = true;
     _resetWordCountVars();
@@ -68,10 +71,10 @@ bible.searchWholeBook = function(){
             });
 
         });
-
+//push http request into array
         requestQ.push(getVerseRequest);
     });
-
+//send array to $q to execute all http requests, then do something after they are all complete
     $q.all(requestQ).then(function(values){
         bible.foundWords = "La palabra "+bible.searchTextInBook + " Se encontro " + bible.wordCount +" Veces";
         bible.IsLoadingVerses = false;
@@ -80,7 +83,15 @@ bible.searchWholeBook = function(){
     });
 };
 
+    bible.addToFavoriteVerses= function (verse){
+        console.log(verse);
+        $http.post('/api/addToFavorite',{verseId :verse.id, reference:verse.reference}).then(function(result){
 
+
+        });
+
+
+    };
 
 
 $http.get('/api/books').then(function(result){
@@ -88,7 +99,37 @@ bible.books = result.data.response.books;
     bible.selectedBook = bible.books[0];
 debugger;
 
-})
+});
+
+
+
+
+};
+var accountController = function($http,$sce){
+    var account = this;
+    account.MyFavoriteVerses = [];
+    account.renderHtml = function (htmlCode) {
+        debugger;
+        return $sce.trustAsHtml(htmlCode);
+    };
+
+    $http.get('/api/getMyVerses').then(function(result){
+
+        console.log(result);
+
+        result.data.MyFavoriteVerses.forEach(function(verse){
+
+            $http.get('/api/getSingleVerse/'+verse.verseId).then(function(result){
+                debugger;
+                account.MyFavoriteVerses.push(result.data.response.verses[0]);
+
+            });
+
+        });
+
+
+
+    });
 
 
 
@@ -96,8 +137,7 @@ debugger;
 };
 
 
+    app.controller('bibleController',bibleController);
 
-app.controller('bibleController',bibleController);
-
-
-})()
+    app.controller('accountController',accountController);
+})();

@@ -57,4 +57,34 @@
 
     }
 
+    data.addToFavorite = function(username,verseData,next){
+
+        database.getDb(function(err,db){
+            if(err){
+                next(err);
+            }else{
+                db.usuarios.update({username:username}, { $addToSet: { MyFavoriteVerses: verseData } }, next);
+
+
+            }
+
+        })
+    };
+
+
+    data.getFavoriteVerses = function(username,next){
+
+        database.getDb(function(err,db){
+            if(err){
+                next(err);
+            }else{
+                db.usuarios.find({
+                    username: username.toUpperCase()
+                },{MyFavoriteVerses:1}).limit(1).next(next);
+
+            }
+        })
+    };
+
+
 })(module.exports);

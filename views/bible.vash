@@ -5,7 +5,7 @@
 })
 @html.block("body",function(model){
 
-<div ng-app="bibleApp" >
+<div  >
  
 <div ng-controller="bibleController as bible" class="row">
 
@@ -68,7 +68,14 @@
     </h1>
 <div ng-repeat='verse in bible.selectedChapter.verses' >
 
- 			<div ng-bind-html="bible.renderHtml(verse.text)"></div>
+ 			<div ng-bind-html="bible.renderHtml(verse.text)">
+
+
+            </div>
+    <div class="text-center">
+        <a href="#" ng-click="bible.addToFavoriteVerses(verse)"><i class="fa fa-plus"></i> Add to favorites</a>
+    </div>
+
  		</div>
 </div>
 
