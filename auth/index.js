@@ -50,7 +50,7 @@
 
 
 
-	}
+	};
 
 	auth.ensureApiAuthenticated = function(req, res, next) {
 		if (req.isAuthenticated()) {
@@ -66,16 +66,25 @@
 
 
 
-	}
+	};
 
 	auth.init = function(app) {
 		//setup passport authentication
 		passport.use(new localStrategy(userVerify));
 		passport.serializeUser(function(user, next) {
-			next(null, user.username);
+
+			try {
+
+				next(null, user.username);
+				debugger
+			}catch(err){
+				console.log(err)
+
+			}
 
 
-		})
+
+		});
 
 
 
@@ -94,10 +103,10 @@
 
 			})
 
-		})
+		});
 
-		app.use(passport.initialize())
-		app.use(passport.session())
+		app.use(passport.initialize());
+		app.use(passport.session());
 		app.get("/register", function(req, res) {
 			if (req.user) {
 				console.log('user logged in register page!');
@@ -114,7 +123,7 @@
 
 			}
 
-		})
+		});
 
 		app.get("/", function(req, res) {
 			if (req.user) {
@@ -180,7 +189,7 @@
 										}
 									})
 								}
-							})
+							});
 
 							authFunction(req, res, next)
 
@@ -225,7 +234,19 @@
 					req.logIn(user, function(err) {
 						if (err) {
 
-							next(err)
+
+
+							/*next le pasa el control a passport ( the next middleware)... pero passport no sabe que hacer
+							 con el error so i wont pass the control to him in case the log in fails
+							 next(err);
+							 i will just redirect to the login view with a message of invalid username/pass
+							 */
+							res.render("login", {
+								title: "Login",
+								message: "Invalid Username/Password"
+							});
+
+
 						} else {
 							res.redirect("/bible")
 
@@ -234,10 +255,10 @@
 					})
 				}
 
-			})
+			});
 
 
-			authFunction(req, res, next)
+			authFunction(req, res, next);
 
 		})
 
