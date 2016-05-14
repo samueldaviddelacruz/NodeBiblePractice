@@ -239,7 +239,7 @@
 							/*next le pasa el control a passport ( the next middleware)... pero passport no sabe que hacer
 							 con el error so i wont pass the control to him in case the log in fails
 							 next(err);
-							 i will just redirect to the login view with a message of invalid username/pass
+							 i will just redirect to the login view with a message of invalid username/password
 							 */
 							res.render("login", {
 								title: "Login",
