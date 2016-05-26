@@ -1,12 +1,12 @@
-(function(data) {
+((data) =>{
 
     var database = require("./database");
 
 
 
-    data.getUser = function(username, next) {
+    data.getUser = (username, next) =>{
 
-        database.getDb(function(err, db) {
+        database.getDb( (err, db) =>{
             if (err) {
                 next(err)
             } else {
@@ -30,10 +30,10 @@
     }
 
 
-    data.addUser = function(user, next) {
+    data.addUser = (user, next) =>{
 
 
-        database.getDb(function(err, db) {
+        database.getDb((err, db) =>{
             if (err) {
                 console.log(err);
                 next(err);
@@ -57,9 +57,9 @@
 
     }
 
-    data.addToFavorite = function(username,verseData,next){
+    data.addToFavorite = (username,verseData,next)=>{
 
-        database.getDb(function(err,db){
+        database.getDb((err,db)=>{
             if(err){
                 next(err);
             }else{
@@ -72,9 +72,9 @@
     };
 
 
-    data.getFavoriteVerses = function(username,next){
+    data.getFavoriteVerses = (username,next)=>{
 
-        database.getDb(function(err,db){
+        database.getDb((err,db)=>{
             if(err){
                 next(err);
             }else{

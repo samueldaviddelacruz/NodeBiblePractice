@@ -1,7 +1,7 @@
-(function (controllers) {
+( (controllers) =>{
   
     var bibleController = require("./bibleController")
-    controllers.init = function (app) {
+    controllers.init =  (app) =>{
         
         bibleController.init(app);
     }

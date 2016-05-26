@@ -3,7 +3,7 @@
     var data = require("../data");
     var auth = require("../auth");
     var request = require("request");
-    bibleController.init = function (app) {
+    bibleController.init =  (app) =>{
         var booksurl = 'https://bibles.org/v2/versions/spa-RVR1960/books.js?include_chapters=true';
         var bibleAPIkey = 'QNeyBv2cdkEefhkwNXjmF1NonK42cA7CmjDvGBRs';
 

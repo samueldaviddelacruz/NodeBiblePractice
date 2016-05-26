@@ -10,7 +10,7 @@
 
 <div ng-controller="accountController as account" class="row">
 
-    <div class="col-md-6 container" style=" overflow-y: auto; max-height: 800px;">
+    <div class="col-lg-6 container" style=" overflow-y: auto; max-height: 800px;">
 
 
 

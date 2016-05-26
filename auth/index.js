@@ -8,7 +8,7 @@
 
 	function userVerify(username, password, next) {
 
-		data.getUser(username, function(err, user) {
+		data.getUser(username, (err, user) => {
 
 			if (!err && user) {
 				var testHash = hasher.computeHash(password, user.salt);
@@ -36,7 +36,7 @@
 
 	}
 
-	auth.ensureAuthenticated = function(req, res, next) {
+	auth.ensureAuthenticated = (req, res, next) =>{
 		if (req.isAuthenticated()) {
 
 
@@ -52,7 +52,7 @@
 
 	};
 
-	auth.ensureApiAuthenticated = function(req, res, next) {
+	auth.ensureApiAuthenticated = (req, res, next) => {
 		if (req.isAuthenticated()) {
 
 
@@ -68,10 +68,10 @@
 
 	};
 
-	auth.init = function(app) {
+	auth.init = (app) =>{
 		//setup passport authentication
 		passport.use(new localStrategy(userVerify));
-		passport.serializeUser(function(user, next) {
+		passport.serializeUser((user, next) =>{
 
 			try {
 
@@ -88,9 +88,9 @@
 
 
 
-		passport.deserializeUser(function(key, next) {
+		passport.deserializeUser((key, next) =>{
 
-			data.getUser(key, function(err, user) {
+			data.getUser(key, (err, user) =>{
 				if (err) {
 					next(null, false, {
 						message: "failed to retrieve user"
@@ -107,7 +107,7 @@
 
 		app.use(passport.initialize());
 		app.use(passport.session());
-		app.get("/register", function(req, res) {
+		app.get("/register", (req, res) =>{
 			if (req.user) {
 				console.log('user logged in register page!');
 				res.render("register", {
@@ -125,7 +125,7 @@
 
 		});
 
-		app.get("/", function(req, res) {
+		app.get("/", (req, res) =>{
 			if (req.user) {
 				console.log('user already in session :' + req.user.username);
 				res.redirect('/bible')
@@ -140,7 +140,7 @@
 		});
 
 
-		app.post("/register", function(req, res, next) {
+		app.post("/register", (req, res, next) =>{
 
 
 			var salt = hasher.createSalt();
@@ -155,7 +155,7 @@
 
 			};
 
-			data.getUser(_newuser.username,function (err,user){
+			data.getUser(_newuser.username, (err,user)=>{
 
 				if(user){
 					req.flash("registrationError",user.username + " User Already Exists" );
@@ -163,7 +163,7 @@
 
 				}else{
 					console.log(_newuser);
-					data.addUser(_newuser, function(err) {
+					data.addUser(_newuser, (err) =>{
 						if (err) {
 							console.log(err + 'sdsd');
 							req.flash("registrationError", "Could Not save User to Database");
@@ -172,14 +172,14 @@
 						} else {
 
 
-							var authFunction = passport.authenticate("local", function(err, user, info) {
+							var authFunction = passport.authenticate("local", (err, user, info) =>{
 
 								if (err) {
 									next(err)
 								} else {
 
 
-									req.logIn(user, function(err) {
+									req.logIn(user, (err) =>{
 										if (err) {
 
 											next(err)
@@ -211,7 +211,7 @@
 
 
 
-		app.get('/logout', function(req, res) {
+		app.get('/logout', (req, res) =>{
 			req.logout();
 			res.redirect('/');
 		});
@@ -219,8 +219,8 @@
 
 
 
-		app.post("/login", function(req, res, next) {
-			var authFunction = passport.authenticate("local", function(err, user, info) {
+		app.post("/login", (req, res, next) =>{
+			var authFunction = passport.authenticate("local", (err, user, info) =>{
 
 				if (err) {
 					res.render("login", {
@@ -231,7 +231,7 @@
 				} else {
 
 
-					req.logIn(user, function(err) {
+					req.logIn(user, (err) =>{
 						if (err) {
 
 
