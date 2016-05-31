@@ -97,6 +97,11 @@
 
             }else{
                 console.log("Success Check MongoLab");
+               // res.send(response);
+                res.set("Content-Type", "application/json");
+
+
+                res.send(response);
         console.log(response);
     }
 

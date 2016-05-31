@@ -1,7 +1,7 @@
 (function(){
 app = angular.module('bibleApp',[]);
 
-var bibleController = function($http,$sce,$q){
+var bibleController = function($http,$sce,$q,$timeout){
 console.log('angular ready to rumble');
 var bible = this;
     bible.IsLoadingVerses=false;
@@ -26,10 +26,10 @@ bible.ListVerses = function(chapter){
     //push http request into array
     requestQ.push(getVerseRequest);
 //send array to $q to execute all http requests, then do something after they are all complete
-    $q.all(requestQ).then(function(values){
+    $q.all(requestQ).then(function(){
 
         bible.IsLoadingVerses = false;
-        requestQ.push = [];
+        requestQ = [];
     });
 
 
@@ -49,43 +49,52 @@ bible.ListVerses = function(chapter){
 
     };
 bible.searchWholeBook = function(){
+    if(bible.searchTextInBook) {
     bible.selectedChapter = {};
     bible.selectedChapter.verses = [];
     //added a requests array to q and execute all requests
     var requestQ = [];
     bible.IsOnFullSearch = true;
     _resetWordCountVars();
-    bible.selectedBook.chapters.forEach(function(chapter){
 
-   var getVerseRequest = getVerses(chapter.id,function(result){
-            var verses = result.data.response.verses;
-            verses.forEach(function(verse){
+        bible.selectedBook.chapters.forEach(function (chapter) {
 
-                if(verse.text.toUpperCase().includes(bible.searchTextInBook.toUpperCase())){
+            var getVerseRequest = getVerses(chapter.id, function (result) {
+                var verses = result.data.response.verses;
+                verses.forEach(function (verse) {
 
-                    bible.wordCount ++;
-                    verse.text = verse.text.replace(bible.searchTextInBook,"<b>"+bible.searchTextInBook.toUpperCase()+"</b>")
-                    bible.selectedChapter.verses.push(verse);
+                    if (verse.text.toUpperCase().includes(bible.searchTextInBook.toUpperCase())) {
 
-                }
+                        bible.wordCount++;
+                        verse.text = verse.text.replace(bible.searchTextInBook, "<b>" + bible.searchTextInBook.toUpperCase() + "</b>");
+                        bible.selectedChapter.verses.push(verse);
+
+                    }
+                });
+
             });
-
-        });
 //push http request into array
-        requestQ.push(getVerseRequest);
-    });
+            requestQ.push(getVerseRequest);
+        });
 //send array to $q to execute all http requests, then do something after they are all complete
-    $q.all(requestQ).then(function(values){
-        bible.foundWords = "La palabra "+bible.searchTextInBook + " Se encontro " + bible.wordCount +" Veces";
-        bible.IsLoadingVerses = false;
-        bible.IsOnFullSearch = false;
-        requestQ.push = [];
-    });
+        $q.all(requestQ).then(function () {
+            bible.foundWords = "La palabra " + bible.searchTextInBook + " Se encontro " + bible.wordCount + " Veces";
+            bible.IsLoadingVerses = false;
+            bible.IsOnFullSearch = false;
+            requestQ.push = [];
+        });
+    }
 };
 
     bible.addToFavoriteVerses= function (verse){
         console.log(verse);
-        $http.post('/api/addToFavorite',{verseId :verse.id, reference:verse.reference}).then(function(result){
+        $http.post('/api/addToFavorite',{verseId :verse.id, reference:verse.reference}).then(function(){
+            debugger;
+            bible.VerseAdded = true;
+           $timeout(function(){
+//alert('test');
+                bible.VerseAdded = false;
+            },3000)
 
 
         });

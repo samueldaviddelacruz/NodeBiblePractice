@@ -8,7 +8,7 @@
 <div  >
  
 <div ng-controller="bibleController as bible" class="row">
-
+<div class="alert alert-success" role="alert" ng-show="bible.VerseAdded">El verso fue agregado a favoritos!</div>
 
 
 
