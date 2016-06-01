@@ -16,13 +16,18 @@
 
         <div ng-repeat='verse in account.MyFavoriteVerses' >
 
-<h1>{{verse.reference}}</h1>
+           <h1>{{verse.reference}}</h1>
 
             <div ng-bind-html="account.renderHtml(verse.text)">
 
 
 
             </div>
+
+             <div class="text-center">
+                    <a href="#" ng-click="account.removeFromFavorites(verse)"><i class="fa fa-minus"></i> Remove from favorites</a>
+                </div>
+
         </div>
 
 

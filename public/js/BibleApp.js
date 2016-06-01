@@ -103,6 +103,10 @@ bible.searchWholeBook = function(){
     };
 
 
+
+    
+
+
 $http.get('/api/books').then(function(result){
 bible.books = result.data.response.books;
     bible.selectedBook = bible.books[0];
@@ -140,6 +144,21 @@ var accountController = function($http,$sce){
 
     });
 
+
+    account.removeFromFavorites = function (verse){
+        //alert('hey');
+        console.log(verse);
+        $http.post('/api/removeFromFavorites',{verseId :verse.id, reference:verse.reference}).then(function(){
+            debugger;
+            account.VerseRemoved = true;
+            $timeout(function(){
+//alert('test');
+                account.VerseRemoved = false;
+            },3000)
+
+        });
+
+    };
 
 
 

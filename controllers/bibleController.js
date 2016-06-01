@@ -105,13 +105,37 @@
         console.log(response);
     }
 
-    })
-        ;
+    });
+
 
         console.log(req.body);
 
-    })
-        ;
+    });
+
+
+        app.post("/api/removeFromFavorites", auth.ensureAuthenticated, (req, res, next) => {
+
+            var versedata = req.body;
+            data.removeFromFavorites(req.user.username, versedata, (err, response) => {
+                if(err){
+                    console.log(err);
+                    next(err);
+
+                }else{
+                    console.log("Success Check MongoLab");
+                    // res.send(response);
+                    res.set("Content-Type", "application/json");
+
+
+                    res.send(response);
+                    console.log(response);
+                }
+
+            });
+
+            console.log(req.body);
+        });
+
 
 
         app.get("/api/getSingleVerse/:verseId", (req, res) => {

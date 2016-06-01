@@ -27,7 +27,7 @@
         })
 
 
-    }
+    };
 
 
     data.addUser = (user, next) =>{
@@ -55,7 +55,7 @@
         })
 
 
-    }
+    };
 
     data.addToFavorite = (username,verseData,next)=>{
 
@@ -71,6 +71,19 @@
         })
     };
 
+    data.removeFromFavorites = (username,verseData,next)=>{
+
+        database.getDb((err,db)=>{
+            if(err){
+                next(err);
+            }else{
+                db.usuarios.update({username:username}, { $pull: { MyFavoriteVerses: verseData } }, next);
+
+
+            }
+
+        })
+    };
 
     data.getFavoriteVerses = (username,next)=>{
 
