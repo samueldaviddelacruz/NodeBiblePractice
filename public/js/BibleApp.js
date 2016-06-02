@@ -120,16 +120,17 @@ debugger;
 };
 var accountController = function($http,$sce){
     var account = this;
-    account.MyFavoriteVerses = [];
+
     account.renderHtml = function (htmlCode) {
         debugger;
         return $sce.trustAsHtml(htmlCode);
     };
+function getMyVerses(){
 
     $http.get('/api/getMyVerses').then(function(result){
 
         console.log(result);
-
+        account.MyFavoriteVerses = [];
         result.data.MyFavoriteVerses.forEach(function(verse){
 
             $http.get('/api/getSingleVerse/'+verse.verseId).then(function(result){
@@ -145,23 +146,23 @@ var accountController = function($http,$sce){
     });
 
 
+}
+
+
+
     account.removeFromFavorites = function (verse){
         //alert('hey');
         console.log(verse);
         $http.post('/api/removeFromFavorites',{verseId :verse.id, reference:verse.reference}).then(function(){
-            debugger;
-            account.VerseRemoved = true;
-            $timeout(function(){
-//alert('test');
-                account.VerseRemoved = false;
-            },3000)
+            getMyVerses();
+
 
         });
 
     };
 
 
-
+getMyVerses();
 };
 
 
