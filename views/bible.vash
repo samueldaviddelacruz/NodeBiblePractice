@@ -14,8 +14,8 @@
 
 
  <div class="col-sm-4" style="overflow-y: auto;max-height: 800px;">
-   <p>Soon Bible Stuff here!</p>
-  Bible Books!:
+
+Libros Biblicos:
   <div ng-hide="bible.books.length > 0">
       <div class="text-center">
           <i class="fa fa-circle-o-notch fa-spin"></i> Loading...
@@ -35,9 +35,8 @@
 
 <div>
 
-    <label ng-show="bible.selectedBook">Filter Chapter # : <input type="number" ng-model="bible.filterChapter" class="form-control"></label><br>
 
-    <label ng-show="bible.selectedBook"> Search Whole Book :    <input ng-model="bible.searchTextInBook" class="form-control"> <a href="#" ng-click="bible.searchWholeBook()" class="btn btn-success">Search!</a></label>
+    <label ng-show="bible.selectedBook"> Buscar en libro :    <input ng-model="bible.searchTextInBook" class="form-control"> <a href="#" ng-click="bible.searchWholeBook()" class="btn btn-success">Buscar!</a></label>
 
     <div class="list-group">
         <div ng-show="bible.IsOnFullSearch">
@@ -73,7 +72,7 @@
 
             </div>
     <div class="text-center">
-        <a href="#" ng-click="bible.addToFavoriteVerses(verse)"><i class="fa fa-plus"></i> Add to favorites</a>
+        <a href="#" ng-click="bible.addToFavoriteVerses(verse)"><i class="fa fa-plus"></i> Agregar a favoritos</a>
     </div>
 
  		</div>

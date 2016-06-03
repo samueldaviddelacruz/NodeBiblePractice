@@ -14,13 +14,13 @@
 }
         <form action="/login" method="post" role="form">
        <div class="form-group">
-            <label> username :</label>
-            <input type="text" name="username" placeholder = "username" class="form-control"/><br>
+            <label> nombre de usuario :</label>
+            <input type="text" name="username" placeholder = "nombre de usuario" class="form-control"/><br>
 
        </div>
            <div class="form-group">
-             <label> password :</label>
-                        <input type="password" name="password" placeholder = "Password" class="form-control"/><br>
+             <label> contrasena :</label>
+                        <input type="password" name="password" placeholder = "contrasena" class="form-control"/><br>
                         <input type="submit" value="Login" class="btn btn-success" />
 
             </div>

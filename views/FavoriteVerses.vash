@@ -25,7 +25,7 @@
             </div>
 
              <div class="text-center">
-                    <a href="#" ng-click="account.removeFromFavorites(verse)"><i class="fa fa-minus"></i> Remove from favorites</a>
+                    <a href="#" ng-click="account.removeFromFavorites(verse)"><i class="fa fa-minus"></i> Remover de favoritos</a>
                 </div>
 
         </div>
