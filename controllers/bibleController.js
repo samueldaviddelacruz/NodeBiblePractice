@@ -18,7 +18,8 @@
                 json: true
             },(error, response, body) =>
         {
-            console.log(response.statusCode);
+
+            console.log(error);
             // console.log(body)
             if (!error && response.statusCode === 200) {
                 // Print the json response

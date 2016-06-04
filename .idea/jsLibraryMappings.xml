@@ -3,5 +3,6 @@
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{BibleAPIPractice node_modules}" />
     <file url="file://$PROJECT_DIR$/data/index.js" libraries="{ECMAScript 6}" />
+    <includedPredefinedLibrary name="ECMAScript 6" />
   </component>
 </project>

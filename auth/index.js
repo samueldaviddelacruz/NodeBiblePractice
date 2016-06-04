@@ -150,7 +150,7 @@
 				email: req.body.email,
 				username: req.body.username.toUpperCase(),
 				passwordHash: hasher.computeHash(req.body.password, salt),
-				salt: salt,
+				salt: salt
 
 
 			};
@@ -158,7 +158,7 @@
 			data.getUser(_newuser.username, (err,user)=>{
 
 				if(user){
-					req.flash("registrationError",user.username + " User Already Exists" );
+					req.flash("registrationError",user.username + "  ya esta en uso" );
 					res.redirect("/register")
 
 				}else{
@@ -172,7 +172,7 @@
 						} else {
 
 
-							var authFunction = passport.authenticate("local", (err, user, info) =>{
+							var authFunction = passport.authenticate("local", (err, user) =>{
 
 								if (err) {
 									next(err)
@@ -220,7 +220,7 @@
 
 
 		app.post("/login", (req, res, next) =>{
-			var authFunction = passport.authenticate("local", (err, user, info) =>{
+			var authFunction = passport.authenticate("local", (err, user) =>{
 
 				if (err) {
 					res.render("login", {
