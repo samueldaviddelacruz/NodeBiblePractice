@@ -14,7 +14,7 @@
   // =========================
 
   var backdrop = '.dropdown-backdrop'
-  var toggle   = '[data-toggle="dropdown"]'
+  var toggle   = '[DB-toggle="dropdown"]'
   var Dropdown = function (element) {
     $(element).on('click.bs.dropdown', this.toggle)
   }
@@ -22,7 +22,7 @@
   Dropdown.VERSION = '3.3.6'
 
   function getParent($this) {
-    var selector = $this.attr('data-target')
+    var selector = $this.attr('DB-target')
 
     if (!selector) {
       selector = $this.attr('href')
@@ -156,10 +156,10 @@
   // ===================================
 
   $(document)
-    .on('click.bs.dropdown.data-api', clearMenus)
-    .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
-    .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
-    .on('keydown.bs.dropdown.data-api', toggle, Dropdown.prototype.keydown)
-    .on('keydown.bs.dropdown.data-api', '.dropdown-menu', Dropdown.prototype.keydown)
+    .on('click.bs.dropdown.DB-api', clearMenus)
+    .on('click.bs.dropdown.DB-api', '.dropdown form', function (e) { e.stopPropagation() })
+    .on('click.bs.dropdown.DB-api', toggle, Dropdown.prototype.toggle)
+    .on('keydown.bs.dropdown.DB-api', toggle, Dropdown.prototype.keydown)
+    .on('keydown.bs.dropdown.DB-api', '.dropdown-menu', Dropdown.prototype.keydown)
 
 }(jQuery);

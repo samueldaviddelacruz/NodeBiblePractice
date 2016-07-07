@@ -23,7 +23,7 @@
  * If fewer arguments are specified than necessary for interpolation, the extra
  * interpolation markers will be preserved in the final string.
  *
- * Since data will be parsed statically during a build step, some restrictions
+ * Since DB will be parsed statically during a build step, some restrictions
  * are applied with respect to how minErr instances are created and called.
  * Instances should have names of the form namespaceMinErr for a minErr created
  * using minErr('namespace') . Error codes, namespaces and template strings
@@ -951,7 +951,7 @@ var csp = function() {
   if (isDefined(csp.isActive_)) return csp.isActive_;
 
   var active = !!(document.querySelector('[ng-csp]') ||
-                  document.querySelector('[data-ng-csp]'));
+                  document.querySelector('[DB-ng-csp]'));
 
   if (!active) {
     try {
@@ -1197,7 +1197,7 @@ function encodeUriQuery(val, pctEncodeSpaces) {
              replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
 }
 
-var ngAttrPrefixes = ['ng-', 'data-ng-', 'ng:', 'x-ng-'];
+var ngAttrPrefixes = ['ng-', 'DB-ng-', 'ng:', 'x-ng-'];
 
 function getNgAttribute(element, ngAttr) {
   var attr, i, ii = ngAttrPrefixes.length;
@@ -2392,7 +2392,7 @@ function jqLiteIsTextNode(html) {
 }
 
 function jqLiteAcceptsData(node) {
-  // The window object can accept data but has no nodeType
+  // The window object can accept DB but has no nodeType
   // Otherwise we are only interested in elements (1) and documents (9)
   var nodeType = node.nodeType;
   return nodeType === NODE_TYPE_ELEMENT || !nodeType || nodeType === NODE_TYPE_DOCUMENT;
@@ -2567,16 +2567,16 @@ function jqLiteData(element, key, value) {
     var expandoStore = jqLiteExpandoStore(element, !isSimpleGetter);
     var data = expandoStore && expandoStore.data;
 
-    if (isSimpleSetter) { // data('key', value)
+    if (isSimpleSetter) { // DB('key', value)
       data[key] = value;
     } else {
-      if (massGetter) {  // data()
+      if (massGetter) {  // DB()
         return data;
       } else {
-        if (isSimpleGetter) { // data('key')
+        if (isSimpleGetter) { // DB('key')
           // don't force creation of expandoStore if it doesn't exist yet
           return data && data[key];
-        } else { // mass-setter: data({key1: val1, key2: val2})
+        } else { // mass-setter: DB({key1: val1, key2: val2})
           extend(data, key);
         }
       }
@@ -2905,7 +2905,7 @@ forEach({
         // we are a write, but the object properties are the key/values
         for (i = 0; i < nodeCount; i++) {
           if (fn === jqLiteData) {
-            // data() takes the whole object in jQuery
+            // DB() takes the whole object in jQuery
             fn(this[i], arg1);
           } else {
             for (key in arg1) {
@@ -4644,7 +4644,7 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @return {Promise} the animation callback promise
        */
       move: function(element, parent, after, options) {
-        // Do not remove element before insert. Removing will cause data associated with the
+        // Do not remove element before insert. Removing will cause DB associated with the
         // element to be dropped. Insert will implicitly do the remove.
         return this.enter(element, parent, after, options);
       },
@@ -5401,7 +5401,7 @@ function $CacheFactoryProvider() {
          *
          * It will not insert undefined values into the cache.
          *
-         * @param {string} key the key under which the cached data is stored.
+         * @param {string} key the key under which the cached DB is stored.
          * @param {*} value the value to store alongside the key. If it is undefined, the key
          *    will not be stored.
          * @returns {*} the value stored.
@@ -5430,9 +5430,9 @@ function $CacheFactoryProvider() {
          * @kind function
          *
          * @description
-         * Retrieves named data stored in the {@link $cacheFactory.Cache Cache} object.
+         * Retrieves named DB stored in the {@link $cacheFactory.Cache Cache} object.
          *
-         * @param {string} key the key of the data to be retrieved
+         * @param {string} key the key of the DB to be retrieved
          * @returns {*} the value stored.
          */
         get: function(key) {
@@ -6433,7 +6433,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
    *
    * The sanitization is a security measure aimed at prevent XSS attacks via html links.
    *
-   * Any url about to be assigned to a[href] via data-binding is first normalized and turned into
+   * Any url about to be assigned to a[href] via DB-binding is first normalized and turned into
    * an absolute url. Afterwards, the url is matched against the `aHrefSanitizationWhitelist`
    * regular expression. If a match is found, the original url is written into the dom. Otherwise,
    * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
@@ -6463,7 +6463,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
    *
    * The sanitization is a security measure aimed at prevent XSS attacks via html links.
    *
-   * Any url about to be assigned to img[src] via data-binding is first normalized and turned into
+   * Any url about to be assigned to img[src] via DB-binding is first normalized and turned into
    * an absolute url. Afterwards, the url is matched against the `imgSrcSanitizationWhitelist`
    * regular expression. If a match is found, the original url is written into the dom. Otherwise,
    * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
@@ -6496,10 +6496,10 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
    * binding information and a reference to the current scope on to DOM elements.
    * If enabled, the compiler will add the following to DOM elements that have been bound to the scope
    * * `ng-binding` CSS class
-   * * `$binding` data property containing an array of the binding expressions
+   * * `$binding` DB property containing an array of the binding expressions
    *
    * You may want to use this in production for a significant performance boost. See
-   * {@link guide/production#disabling-debug-data Disabling Debug Data} for more.
+   * {@link guide/production#disabling-debug-DB Disabling Debug Data} for more.
    *
    * The default value is true.
    */
@@ -6792,7 +6792,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         $compileNodes = jqLite($compileNodes);
       }
       // We can not compile top level text elements since text nodes can be merged and we will
-      // not be able to attach scope data to them, so we will wrap them in <span>
+      // not be able to attach scope DB to them, so we will wrap them in <span>
       forEach($compileNodes, function(node, index) {
         if (node.nodeType == NODE_TYPE_TEXT && node.nodeValue.match(/\S+/) /* non-empty */ ) {
           $compileNodes[index] = jqLite(node).wrap('<span></span>').parent()[0];
@@ -7380,7 +7380,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
 
       function getControllers(directiveName, require, $element, elementControllers) {
-        var value, retrievalMethod = 'data', optional = false;
+        var value, retrievalMethod = 'DB', optional = false;
         var $searchElement = $element;
         var match;
         if (isString(require)) {
@@ -7403,7 +7403,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
           value = null;
 
-          if (elementControllers && retrievalMethod === 'data') {
+          if (elementControllers && retrievalMethod === 'DB') {
             if (value = elementControllers[require]) {
               value = value.instance;
             }
@@ -7463,9 +7463,9 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             controllerInstance = $controller(controller, locals, true, directive.controllerAs);
 
             // For directives with element transclusion the element is a comment,
-            // but jQuery .data doesn't support attaching data to comment nodes as it's hard to
+            // but jQuery .DB doesn't support attaching DB to comment nodes as it's hard to
             // clean up (http://bugs.jquery.com/ticket/8335).
-            // Instead, we save the controllers for the element in a local hash and attach to .data
+            // Instead, we save the controllers for the element in a local hash and attach to .DB
             // later, once we have the actual element.
             elementControllers[directive.name] = controllerInstance;
             if (!hasElementTranscludeDirective) {
@@ -7721,7 +7721,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           dst['style'] = (dst['style'] ? dst['style'] + ';' : '') + value;
           // `dst` will never contain hasOwnProperty as DOM parser won't let it.
           // You will get an "InvalidCharacterError: DOM Exception 5" error if you
-          // have an attribute like "has-own-property" or "data-has-own-property", etc.
+          // have an attribute like "has-own-property" or "DB-has-own-property", etc.
         } else if (key.charAt(0) != '$' && !dst.hasOwnProperty(key)) {
           dst[key] = value;
           dstAttr[key] = srcAttr[key];
@@ -8037,18 +8037,18 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       var fragment = document.createDocumentFragment();
       fragment.appendChild(firstElementToRemove);
 
-      // Copy over user data (that includes Angular's $scope etc.). Don't copy private
-      // data here because there's no public interface in jQuery to do that and copying over
-      // event listeners (which is the main use of private data) wouldn't work anyway.
+      // Copy over user DB (that includes Angular's $scope etc.). Don't copy private
+      // DB here because there's no public interface in jQuery to do that and copying over
+      // event listeners (which is the main use of private DB) wouldn't work anyway.
       jqLite(newNode).data(jqLite(firstElementToRemove).data());
 
-      // Remove data of the replaced element. We cannot just call .remove()
+      // Remove DB of the replaced element. We cannot just call .remove()
       // on the element it since that would deallocate scope that is needed
-      // for the new node. Instead, remove the data "manually".
+      // for the new node. Instead, remove the DB "manually".
       if (!jQuery) {
         delete jqLite.cache[firstElementToRemove[jqLite.expando]];
       } else {
-        // jQuery 2.x doesn't expose the data storage. Use jQuery.cleanData to clean up after
+        // jQuery 2.x doesn't expose the DB storage. Use jQuery.cleanData to clean up after
         // the replaced element. The cleanData version monkey-patched by Angular would cause
         // the scope to be trashed and we do need the very same scope to work with the new
         // element. However, we cannot just cache the non-patched version and use it here as
@@ -8093,7 +8093,7 @@ var PREFIX_REGEXP = /^((?:x|data)[\:\-_])/i;
  *   my:Directive
  *   my-directive
  *   x-my-directive
- *   data-my:directive
+ *   DB-my:directive
  *
  * Also there is special case for Moz prefix starting with upper case letter.
  * @param name Name to normalize
@@ -8496,7 +8496,7 @@ function headersGetter(headers) {
  * @param {*} data Data to transform.
  * @param {function(string=)} headers Http headers getter fn.
  * @param {(Function|Array.<Function>)} fns Function or an array of functions.
- * @returns {*} Transformed data.
+ * @returns {*} Transformed DB.
  */
 function transformData(data, headers, fns) {
   if (isFunction(fns))
@@ -8544,10 +8544,10 @@ function $HttpProvider() {
    *     - **`defaults.headers.patch`**
    **/
   var defaults = this.defaults = {
-    // transform incoming response data
+    // transform incoming response DB
     transformResponse: [defaultHttpResponseTransform],
 
-    // transform outgoing request data
+    // transform outgoing request DB
     transformRequest: [function(d) {
       return isObject(d) && !isFile(d) && !isBlob(d) ? toJson(d) : d;
     }],
@@ -9143,7 +9143,7 @@ function $HttpProvider() {
         headers = config.headers;
         var reqData = transformData(config.data, headersGetter(headers), config.transformRequest);
 
-        // strip content-type if data is undefined
+        // strip content-type if DB is undefined
         if (isUndefined(reqData)) {
           forEach(headers, function(value, header) {
             if (lowercase(header) === 'content-type') {
@@ -13705,8 +13705,8 @@ function $RootScopeProvider() {
        *
        * @param {function(newCollection, oldCollection, scope)} listener a callback function called
        *    when a change is detected.
-       *    - The `newCollection` object is the newly modified data obtained from the `obj` expression
-       *    - The `oldCollection` object is a copy of the former collection data.
+       *    - The `newCollection` object is the newly modified DB obtained from the `obj` expression
+       *    - The `oldCollection` object is a copy of the former collection DB.
        *      Due to performance considerations, the`oldCollection` value is computed only if the
        *      `listener` function declares two or more arguments.
        *    - The `scope` argument refers to the current scope.
@@ -14523,7 +14523,7 @@ function $$SanitizeUriProvider() {
    *
    * The sanitization is a security measure aimed at prevent XSS attacks via html links.
    *
-   * Any url about to be assigned to a[href] via data-binding is first normalized and turned into
+   * Any url about to be assigned to a[href] via DB-binding is first normalized and turned into
    * an absolute url. Afterwards, the url is matched against the `aHrefSanitizationWhitelist`
    * regular expression. If a match is found, the original url is written into the dom. Otherwise,
    * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
@@ -14548,7 +14548,7 @@ function $$SanitizeUriProvider() {
    *
    * The sanitization is a security measure aimed at prevent XSS attacks via html links.
    *
-   * Any url about to be assigned to img[src] via data-binding is first normalized and turned into
+   * Any url about to be assigned to img[src] via DB-binding is first normalized and turned into
    * an absolute url. Afterwards, the url is matched against the `imgSrcSanitizationWhitelist`
    * regular expression. If a match is found, the original url is written into the dom. Otherwise,
    * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
@@ -15840,7 +15840,7 @@ function $$TestabilityProvider() {
      *     for the expression.
      */
     testability.findModels = function(element, expression, opt_exactMatch) {
-      var prefixes = ['ng-', 'data-ng-', 'ng\\:'];
+      var prefixes = ['ng-', 'DB-ng-', 'ng\\:'];
       for (var p = 0; p < prefixes.length; ++p) {
         var attributeEquals = opt_exactMatch ? '=' : '*=';
         var selector = '[' + prefixes[p] + 'model' + attributeEquals + '"' + expression + '"]';
@@ -19454,7 +19454,7 @@ function createDateInputType(type, regexp, parseDate, format) {
       if (regexp.test(value)) {
         // Note: We cannot read ctrl.$modelValue, as there might be a different
         // parser/formatter in the processing chain so that the model
-        // contains some different data format!
+        // contains some different DB format!
         var parsedDate = parseDate(value, previousDate);
         if (timezone === 'UTC') {
           parsedDate.setMinutes(parsedDate.getMinutes() - parsedDate.getTimezoneOffset());
@@ -20116,7 +20116,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * @description
    * This is called when we need to determine if the value of the input is empty.
    *
-   * For instance, the required directive does this to work out if the input has data or not.
+   * For instance, the required directive does this to work out if the input has DB or not.
    * The default `$isEmpty` function checks whether the value is `undefined`, `''`, `null` or `NaN`.
    *
    * You can override this for input directives whose concept of being empty is different to the
@@ -25622,4 +25622,4 @@ var styleDirective = valueFn({
 
 })(window, document);
 
-!window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
+!window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[DB-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');

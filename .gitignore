@@ -12,7 +12,8 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
-
+#ignore .idea folder to avoid future conflicts .__.
+.idea
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
 
