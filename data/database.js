@@ -1,7 +1,9 @@
 ( (database) =>{
 
     var mongodb = require("mongodb");
-    var mongoUrl = "mongodb://ingsamy:mega007@ds059519.mongolab.com:59519/mongolabdb";
+
+    var mongoUrl = "mongodb://yourusername:yourpassword@yourmongoinstance/yourdb";
+
     var theDb = null;
     database.getDb =  (next)=>{
         if (!theDb) {
