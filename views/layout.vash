@@ -4,6 +4,8 @@
 <title>@model.title</title>
  
     @html.block("head")
+    <link href="/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
 </head>
 <body>
 <div ng-app="bibleApp">
@@ -37,8 +39,7 @@
 @html.block("body")
 
     <script src="/lib/angular/angular.min.js"></script>
-     <link href="/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-      <link href="/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+
     @html.block("scripts")
 </div>
 </body>

@@ -3,13 +3,13 @@
 	var data = require('../data');
 	var hasher = require('./hasher');
 	var passport = require("passport");
-	var localStrategy = require("passport-local").Strategy;
+    var ViewsRequestHandler = require("../Request Handlers/Views.Handler")
+    var localStrategy = require("passport-local").Strategy;
 
 
 	function userVerify(username, password, next) {
 
 		data.getUser(username, (err, user) => {
-
 			if (!err && user) {
 				var testHash = hasher.computeHash(password, user.salt);
 
@@ -29,49 +29,29 @@
 					message: "User Doesnt Exists"
 				});
 			}
-
-
 		})
-
-
 	}
-
 	auth.ensureAuthenticated = (req, res, next) =>{
 		if (req.isAuthenticated()) {
-
-
 			next();
-
 		} else {
-
 			res.send(401, "Not authorized")
-
 		}
-
-
-
 	};
 
 	auth.ensureApiAuthenticated = (req, res, next) => {
 		if (req.isAuthenticated()) {
-
-
 			next();
-
 		} else {
 
 			res.redirect("/login");
-
 		}
-
-
-
 	};
 
 	auth.init = (app) =>{
 		//setup passport authentication
 		passport.use(new localStrategy(userVerify));
-		passport.serializeUser((user, next) =>{
+		passport.serializeUser(( user, next) =>{
 
 			try {
 
@@ -81,13 +61,7 @@
 				console.log(err)
 
 			}
-
-
-
 		});
-
-
-
 		passport.deserializeUser((key, next) =>{
 
 			data.getUser(key, (err, user) =>{
@@ -132,7 +106,7 @@
 			} else {
 				res.render("login", {
 					title: "Login",
-					message: req.flash("loginError")
+					message: req.flash("loginError","Please Log In")
 				})
 			}
 
@@ -141,126 +115,65 @@
 
 
 		app.post("/register", (req, res, next) =>{
-
-
-			var salt = hasher.createSalt();
-
-			var _newuser = {
-				name: req.body.name,
-				email: req.body.email,
-				username: req.body.username.toUpperCase(),
-				passwordHash: hasher.computeHash(req.body.password, salt),
-				salt: salt
-
-
-			};
-
-			data.getUser(_newuser.username, (err,user)=>{
-
-				if(user){
-					req.flash("registrationError",user.username + "  ya esta en uso" );
-					res.redirect("/register")
-
-				}else{
-					console.log(_newuser);
-					data.addUser(_newuser, (err) =>{
-						if (err) {
-							console.log(err + 'sdsd');
-							req.flash("registrationError", "Could Not save User to Database");
-							res.redirect("/register")
-
-						} else {
-
-
-							var authFunction = passport.authenticate("local", (err, user) =>{
-
-								if (err) {
-									next(err)
-								} else {
-
-
-									req.logIn(user, (err) =>{
-										if (err) {
-
-											next(err)
-										} else {
-											res.redirect("/bible")
-
-										}
-									})
-								}
-							});
-
-							authFunction(req, res, next)
-
-						}
-
-
-					})
-				}
-
-			});
-
-
+			var newUser = getNewUserData(req);
+			data.getUser(newUser.username, getOnGetUserCallback(req,res,next,newUser));
 		});
+        var getNewUserData = (req)=>{
+            var salt = hasher.createSalt();
+            return {
+                name: req.body.name,
+                email: req.body.email,
+                username: req.body.username.toUpperCase(),
+                passwordHash: hasher.computeHash(req.body.password, salt),
+                salt: salt
+            };
+        };
+        var getOnGetUserCallback = (req, res, next,newUser) =>{
+            return (err,user)=>{
+                if(user){
+                    req.flash("registrationError",user.username + "  ya esta en uso" );
+                    res.redirect("/register")
+
+                }else{
+                    data.addUser(newUser, getOnAddUserCallback(req,res,next));
+                }
+            }
+        };
+        var getOnAddUserCallback = (req,res)=>
+        {
+            return (err) => {
+                if (err) {
+                    req.flash("registrationError", "Could Not save User to Database");
+                    res.redirect("/register")
+                }
+                var authFunction = getAuthFunction(req, res);
+                authFunction(req, res, next);
+
+            }
+        }
 
 
-
-
-
-
-
-		app.get('/logout', (req, res) =>{
-			req.logout();
-			res.redirect('/');
-		});
+		app.get('/logout', ViewsRequestHandler.onLogOut);
 
 
 
 
 		app.post("/login", (req, res, next) =>{
-			var authFunction = passport.authenticate("local", (err, user) =>{
-
-				if (err) {
-					res.render("login", {
-						title: "Login",
-						message: err
-					});
-					//next(err)
-				} else {
-
-
-					req.logIn(user, (err) =>{
-						if (err) {
-
-
-
-							/*next le pasa el control a passport ( the next middleware)... pero passport no sabe que hacer
-							 con el error so i wont pass the control to him in case the log in fails
-							 next(err);
-							 i will just redirect to the login view with a message of invalid username/password
-							 */
-							res.render("login", {
-								title: "Login",
-								message: "Invalid Username/Password"
-							});
-
-
-						} else {
-							res.redirect("/bible")
-
-						}
-
-					})
-				}
-
-			});
-
-
+            var authFunction = getAuthFunction(req,res);
 			authFunction(req, res, next);
 
-		})
+		});
 
+
+        var getAuthFunction = (req,res) =>{
+
+            return passport.authenticate("local", getOnAuthCallback(req,res));
+            
+        }
+        var getOnAuthCallback =(req,res) =>{
+            return ViewsRequestHandler.getOnLoginHandler(req,res);
+        } 
+        
 
 	}
 
