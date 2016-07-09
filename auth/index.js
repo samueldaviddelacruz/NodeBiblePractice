@@ -81,37 +81,9 @@
 
 		app.use(passport.initialize());
 		app.use(passport.session());
-		app.get("/register", (req, res) =>{
-			if (req.user) {
-				console.log('user logged in register page!');
-				res.render("register", {
-					title: "Registration",
-					message: req.flash("registrationError"),
-					user: req.user
-				})
-			} else {
-				res.render("register", {
-					title: "Registration",
-					message: req.flash("registrationError")
-				})
+		app.get("/register", ViewsRequestHandler.onRegister);
 
-			}
-
-		});
-
-		app.get("/", (req, res) =>{
-			if (req.user) {
-				console.log('user already in session :' + req.user.username);
-				res.redirect('/bible')
-			} else {
-				res.render("login", {
-					title: "Login",
-					message: req.flash("loginError","Please Log In")
-				})
-			}
-
-
-		});
+		app.get("/", ViewsRequestHandler.onLogIn);
 
 
 		app.post("/register", (req, res, next) =>{
@@ -139,8 +111,7 @@
                 }
             }
         };
-        var getOnAddUserCallback = (req,res)=>
-        {
+        var getOnAddUserCallback = (req,res)=> {
             return (err) => {
                 if (err) {
                     req.flash("registrationError", "Could Not save User to Database");

@@ -26,6 +26,35 @@
         }
         return onLoginHandler;
     }
+
+
+
+    ViewsRequestHandler.onRegister  = (nodeRequest,nodeResponse) =>{
+        if (nodeRequest.user)
+            nodeResponse.render("register", getViewObject("Registration",nodeRequest.user))
+
+        var errorMessage = nodeRequest.flash("registrationError")
+        nodeResponse.render("register",getErrorViewObject("Registration",errorMessage))
+    }
+
+
+    ViewsRequestHandler.onLogIn  = (nodeRequest,nodeResponse) =>{
+        if (nodeRequest.user){
+            nodeResponse.redirect('/bible')
+        }else{
+            nodeResponse.render("login", getViewObject("Login"))
+        }
+
+
+    };
+
+
+    ViewsRequestHandler.onLogOut  = (nodeRequest,nodeResponse) =>{
+        nodeRequest.logout();
+        nodeResponse.redirect('/');
+    };
+
+
     var getViewObject = (title,user) =>{
         return {
             title:title,
@@ -34,16 +63,11 @@
     }
 
     var getErrorViewObject = (title,message) =>{
+        console.log(message)
         return {
             title:title,
             message:message
         };
     }
-
-
-    ViewsRequestHandler.onLogOut  = (nodeRequest,nodeResponse) =>{
-        nodeRequest.logout();
-        nodeResponse.redirect('/');
-    };
 
 })(module.exports)
