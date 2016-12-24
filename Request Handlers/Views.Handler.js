@@ -17,7 +17,7 @@
     ViewsRequestHandler.getOnLoginHandler = (nodeRequest,nodeResponse) =>{
         var onLoginHandler = (error, user) =>{
             if (error)
-                nodeResponse.render("login",  nodeResponse.render("login",getErrorViewObject("Login",error)) );
+                nodeResponse.render("login",getErrorViewObject("Login",error) );
             nodeRequest.logIn(user, (error) =>{
                 if (error)
                     nodeResponse.render("login",getErrorViewObject("Login","Invalid Username/Password"));
@@ -63,7 +63,7 @@
     }
 
     var getErrorViewObject = (title,message) =>{
-        console.log(message)
+        console.log(message);
         return {
             title:title,
             message:message

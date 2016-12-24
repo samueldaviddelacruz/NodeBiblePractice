@@ -7,7 +7,7 @@
     var localStrategy = require("passport-local").Strategy;
 
 
-	function userVerify(username, password, next) {
+	function  userVerify(username, password, next) {
 
 		data.getUser(username, (err, user) => {
 			if (!err && user) {
@@ -23,7 +23,6 @@
 					});
 				}
 
-
 			} else {
 				next(null, false, {
 					message: "User Doesnt Exists"
@@ -35,7 +34,7 @@
 		if (req.isAuthenticated()) {
 			next();
 		} else {
-			res.send(401, "Not authorized")
+			res.redirect("/login");
 		}
 	};
 
@@ -44,11 +43,11 @@
 			next();
 		} else {
 
-			res.redirect("/login");
+			res.send(401, "Not authorized")
 		}
 	};
 
-	auth.init = (app) =>{
+	auth.init = (app) => {
 		//setup passport authentication
 		passport.use(new localStrategy(userVerify));
 		passport.serializeUser(( user, next) =>{
@@ -103,8 +102,9 @@
         var getOnGetUserCallback = (req, res, next,newUser) =>{
             return (err,user)=>{
                 if(user){
+
                     req.flash("registrationError",user.username + "  ya esta en uso" );
-                    res.redirect("/register")
+                    res.redirect("/register");
 
                 }else{
                     data.addUser(newUser, getOnAddUserCallback(req,res,next));
@@ -118,7 +118,7 @@
                     res.redirect("/register")
                 }
                 var authFunction = getAuthFunction(req, res);
-                authFunction(req, res, next);
+                authFunction(req, res);
 
             }
         }
@@ -140,7 +140,7 @@
 
             return passport.authenticate("local", getOnAuthCallback(req,res));
             
-        }
+        };
         var getOnAuthCallback =(req,res) =>{
             return ViewsRequestHandler.getOnLoginHandler(req,res);
         } 

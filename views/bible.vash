@@ -24,7 +24,7 @@ Libros Biblicos:
      <div ng-show="bible.books.length > 0">
 
          <select  ng-model="bible.selectedBook" ng-options="book.name for book in bible.books |filter:bible.searchBook" class="form-control"></select><br>
-         <label >Search Book: <input ng-model="bible.searchBook" class="form-control"></label>
+
 
 
 
@@ -34,7 +34,9 @@ Libros Biblicos:
 <div>
 
 
-    <label ng-show="bible.selectedBook"> Buscar en libro :    <input ng-model="bible.searchTextInBook" class="form-control"> <a href="#" ng-click="bible.searchWholeBook()" class="btn btn-success">Buscar!</a></label>
+    <label ng-show="bible.selectedBook"> Buscar palabra en libro :<input ng-model="bible.searchTextInBook" class="form-control">
+        <a href="#" ng-click="bible.searchWholeBook()" class="btn btn-success">Buscar!</a>
+    </label>
 
     <div class="list-group">
         <div ng-show="bible.IsOnFullSearch">

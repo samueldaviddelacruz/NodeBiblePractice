@@ -24,21 +24,14 @@
 
     data.addUser = (user, next) =>{
 
-
         database.getDb((err, db) =>{
             if (err) {
                 console.log(err);
                 next(err);
             } else {
-
                 db.usuarios.insert(user, next);
-
-
             }
-
         })
-
-
     };
 
     data.addToFavorite = (username,verseData,next)=>{
@@ -72,6 +65,7 @@
     data.getFavoriteVerses = (username,next)=>{
 
         database.getDb((err,db)=>{
+
             if(err){
                 next(err);
             }else{
@@ -80,6 +74,7 @@
                 },{MyFavoriteVerses:1}).limit(1).next(next);
 
             }
+
         })
     };
 
