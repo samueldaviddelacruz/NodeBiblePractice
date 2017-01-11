@@ -20,7 +20,7 @@
             bible.selectedChapter.verses = [];
             _resetWordCountVars();
 
-            bible.selectedChapter.verses = await getVerses2(chapter.id);
+            bible.selectedChapter.verses = await getVerses(chapter.id);
             bible.IsLoadingVerses = false;
             $scope.$apply();
 
@@ -34,7 +34,7 @@
                 if(isOnVersesCache(chapterId)){
                     return versesCache[`${bible.searchTextInBook}":"${chapterId}`];
                 };
-                let result = await $http.get('/api/verses/' + chapterId);
+                let result = await $http.get(`/api/verses/${chapterId}`);
                 let verses = result.data.response.verses;
                 versesCache[`${bible.searchTextInBook}":"${chapterId}`] = verses;
                 return verses;

@@ -55,7 +55,7 @@
 			try {
 
 				next(null, user.username);
-				debugger
+			
 			}catch(err){
 				console.log(err)
 
