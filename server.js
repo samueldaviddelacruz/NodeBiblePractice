@@ -21,6 +21,6 @@ auth.init(app);
 controllers.init(app);
 
 const server = http.createServer(app);
-//server.listen(3500);
-server.listen(process.env.PORT, process.env.IP)
+server.listen(3500);
+//server.listen(process.env.PORT, process.env.IP)
 

@@ -3,79 +3,77 @@
     var database = require("./database");
 
 
+    data.getUser = async(username) => {
 
-    data.getUser = (username, next) =>{
+        let db;
+        try {
+            let user;
+            db = await database.getDb();
 
-        database.getDb( (err, db) =>{
-            if (err) {
-                next(err)
-            } else {
-                
-                db.usuarios.find({
-                    username: username.toUpperCase()
-                }).limit(1).next(next);
-                
-            }
+            user = await db.usuarios.findOne({
+                username: username.toUpperCase()
+            });
 
-        })
-        
+            return user;
+        } catch (err) {
+            throw err;
+        }
+
     };
 
 
-    data.addUser = (user, next) =>{
+    data.addUser = async(user) => {
 
-        database.getDb((err, db) =>{
-            if (err) {
-                console.log(err);
-                next(err);
-            } else {
-                db.usuarios.insert(user, next);
-            }
-        })
+        let db;
+        try {
+            db = await database.getDb();
+            return await db.usuarios.insert(user);
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+
     };
 
-    data.addToFavorite = (username,verseData,next)=>{
+    data.addToFavorite = async(username, verseData, next) => {
+        let db;
+        try {
+            db = await database.getDb();
+            db.usuarios.update({username: username}, {$addToSet: {MyFavoriteVerses: verseData}}, next);
+        } catch (err) {
+            next(err);
+        }
 
-        database.getDb((err,db)=>{
-            if(err){
-                next(err);
-            }else{
-                db.usuarios.update({username:username}, { $addToSet: { MyFavoriteVerses: verseData } }, next);
-
-
-            }
-
-        })
     };
 
-    data.removeFromFavorites = (username,verseData,next)=>{
+    data.removeFromFavorites = async(username, verseData) => {
 
-        database.getDb((err,db)=>{
-            if(err){
-                next(err);
-            }else{
-                db.usuarios.update({username:username}, { $pull: { MyFavoriteVerses: verseData } }, next);
+        let db;
+        try {
+            db = await database.getDb();
+            await db.usuarios.update({username: username}, {$pull: {MyFavoriteVerses: verseData}});
+        } catch (err) {
+            console.log(err)
+            throw err;
+        }
 
-
-            }
-
-        })
     };
 
-    data.getFavoriteVerses = (username,next)=>{
+    data.getFavoriteVerses = async(username, next) => {
 
-        database.getDb((err,db)=>{
+        let db;
+        try {
+            db = await database.getDb();
 
-            if(err){
-                next(err);
-            }else{
-                db.usuarios.find({
-                    username: username.toUpperCase()
-                },{MyFavoriteVerses:1}).limit(1).next(next);
+            let verses = db.usuarios.findOne({
+                username: username.toUpperCase()
+            }, {MyFavoriteVerses: 1});
 
-            }
-
-        })
+            return verses;
+        } catch (err) {
+            console.log(err)
+            throw err;
+        }
     };
 
    

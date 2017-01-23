@@ -1,39 +1,28 @@
 /**
  * Created by Samuel on 7/4/2016.
  */
-var request = require("request");
+const request = require('request-promise');
 var bibleAPIkey = 'QNeyBv2cdkEefhkwNXjmF1NonK42cA7CmjDvGBRs';
 ((remoteRequestHandler) =>{
 
+    remoteRequestHandler.createRequest = async function (url) {
+        let response;
+        let requestOptions = {
+            url: url,
+            auth: {
+                'user': bibleAPIkey,
+                'pass': '',
+                'sendImmediately': false
+            },
+            json: true
+        };
+        try {
+            response = await request(requestOptions);
 
-
-    remoteRequestHandler.createRequest = (url,onRequestResponseCallback) =>{
-        //to successfully call a basic auth protected API
-        // call .auth on the promise returned by request
-        // and pass credentials
-        //noinspection JSUnresolvedFunction
-        request({
-                url: url,
-
-                json: true
-            },onRequestResponseCallback
-        ).
-        auth(bibleAPIkey, '', false);
-
-    }
-    remoteRequestHandler.getRequestResponseCallback = (outPutStream) =>{
-
-        return (error, response, body) =>
-        {
-
-           
-            if (!error && response.statusCode === 200) {
-                // Print the json response
-                outPutStream.set("Content-Type", "application/json");
-                outPutStream.send(body);
-            }
+        } catch (ex) {
+            console.log(err);
         }
-    }
+        return response;
+    };
 
-
-})(module.exports)
+})(module.exports);

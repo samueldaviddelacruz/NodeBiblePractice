@@ -7,28 +7,28 @@
     var localStrategy = require("passport-local").Strategy;
 
 
-	function  userVerify(username, password, next) {
+    async function userVerify(username, password, next) {
 
-		data.getUser(username, (err, user) => {
-			if (!err && user) {
-				var testHash = hasher.computeHash(password, user.salt);
+        let user;
+        try {
+            user = await data.getUser(username);
 
-				if (testHash === user.passwordHash) {
+            var testHash = hasher.computeHash(password, user.salt);
 
-					next(null, user);
+            if (testHash === user.passwordHash) {
 
-				}else {
-					next("Invalid Credentials", false, {
-						message: "Invalid Credentials"
-					});
-				}
+                next(null, user);
 
-			} else {
-				next(null, false, {
-					message: "User Doesnt Exists"
-				});
-			}
-		})
+            } else {
+                next("Invalid Credentials", false, {
+                    message: "Invalid Credentials"
+                });
+            }
+        } catch (err) {
+            next(null, false, {
+                message: "User Doesnt Exists"
+            });
+        }
 	}
 	auth.ensureAuthenticated = (req, res, next) =>{
 		if (req.isAuthenticated()) {
@@ -61,21 +61,18 @@
 
 			}
 		});
-		passport.deserializeUser((key, next) =>{
+        passport.deserializeUser(async(key, next) => {
+            let user;
 
-			data.getUser(key, (err, user) =>{
-				if (err) {
-					next(null, false, {
-						message: "failed to retrieve user"
-					})
+            try {
+                user = await data.getUser(key);
+                next(null, user);
+            } catch (err) {
 
-				} else {
-
-					next(null, user);
-				}
-
-			})
-
+                next(null, false, {
+                    message: "failed to retrieve user"
+                });
+            }
 		});
 
 		app.use(passport.initialize());
@@ -85,9 +82,27 @@
 		app.get("/", ViewsRequestHandler.onLogIn);
 
 
-		app.post("/register", (req, res, next) =>{
+        app.post("/register", async(req, res, next) => {
 			var newUser = getNewUserData(req);
-			data.getUser(newUser.username, getOnGetUserCallback(req,res,next,newUser));
+            let user;
+            try {
+                user = await data.getUser(newUser.username);
+                if (user) {
+
+                    req.flash("registrationError", user.username + "  ya esta en uso");
+                    res.redirect("/register");
+
+                } else {
+
+                    await data.addUser(newUser);
+                    let authFunction = getAuthFunction(req, res);
+                    authFunction(req, res);
+                }
+            } catch (err) {
+                console.log(err);
+                req.flash("registrationError", "Could Not save User to Database");
+                res.redirect("/register")
+            }
 		});
         var getNewUserData = (req)=>{
             var salt = hasher.createSalt();

@@ -3,68 +3,78 @@
  */
 var RemoteRequest = require("../Utils/RemoteRequest.js");
 var DB = require("../data");
+const booksurl = 'https://bibles.org/v2/versions/spa-RVR1960/books.js?include_chapters=true';
+
 ( (ApiRequestHandler) =>{
 
-   
-    ApiRequestHandler.onGetApiBooks = (nodeRequest, nodeResponse) =>{
-        
-        getBibleBooksFromAPI( RemoteRequest.getRequestResponseCallback(nodeResponse) )
 
-    };
-    var getBibleBooksFromAPI = (onRequestResponseCallback) =>{
-        var booksurl = 'https://bibles.org/v2/versions/spa-RVR1960/books.js?include_chapters=true';
-        RemoteRequest.createRequest(booksurl,onRequestResponseCallback);
+    ApiRequestHandler.onGetApiBooks = async(nodeRequest, nodeResponse) => {
 
+        let response = await RemoteRequest.createRequest(booksurl);
+        sendResponse(nodeResponse, response);
     };
 
 
-    ApiRequestHandler.onGetApiVerses = (nodeRequest, nodeResponse) =>{
-        
-        getBibleVersesFromAPI(nodeRequest, RemoteRequest.getRequestResponseCallback(nodeResponse) )
-
-    };
-    var getBibleVersesFromAPI = (nodeRequest,onRequestResponseCallback) =>{
-
-        var versesurl = `https://bibles.org/v2/chapters/${nodeRequest.params.chapterId}/verses.js`;
-        RemoteRequest.createRequest(versesurl,onRequestResponseCallback);
-
+    ApiRequestHandler.onGetApiVerses = async(nodeRequest, nodeResponse) => {
+        let versesurl = `https://bibles.org/v2/chapters/${nodeRequest.params.chapterId}/verses.js`;
+        let response = await RemoteRequest.createRequest(versesurl);
+        sendResponse(nodeResponse, response);
     };
 
-    ApiRequestHandler.onGetApiSingleVerse = (nodeRequest, nodeResponse) =>{
 
-        getBibleSingleVerseFromAPI(nodeRequest, RemoteRequest.getRequestResponseCallback(nodeResponse) )
+    ApiRequestHandler.onGetApiSingleVerse = async(nodeRequest, nodeResponse) => {
 
-    };
-    var getBibleSingleVerseFromAPI = (nodeRequest,onRequestResponseCallback) =>{
-        
         var versesurl = `https://bibles.org/v2/verses/${nodeRequest.params.verseId}.js`;
-        RemoteRequest.createRequest(versesurl,onRequestResponseCallback);
+        let response = await RemoteRequest.createRequest(versesurl);
+        sendResponse(nodeResponse, response);
 
-    }
+    };
+
+
     
     ApiRequestHandler.onAddToFavorites = (nodeRequest, nodeResponse) => {
 
         var versedata = nodeRequest.body;
         DB.addToFavorite(nodeRequest.user.username, versedata,getOnDbResponseCallback(nodeResponse) );
 
-
-    }
-
-
-    ApiRequestHandler.onRemoveFromFavorites = (nodeRequest, nodeResponse) => {
-
-        var versedata = nodeRequest.body;
-        DB.removeFromFavorites(nodeRequest.user.username, versedata,getOnDbResponseCallback(nodeResponse) );
+    };
 
 
-    }
+    ApiRequestHandler.onRemoveFromFavorites = async(nodeRequest, nodeResponse) => {
+
+        let versedata = nodeRequest.body;
+
+        let response;
+        try {
+            response = await DB.removeFromFavorites(nodeRequest.user.username, versedata);
+
+            sendResponse(nodeResponse, response);
+
+        } catch (error) {
+            nodeResponse.send(401, error);
+        }
+
+    };
 
 
+    ApiRequestHandler.onGetMyFavoriteVerses = async(nodeRequest, nodeResponse) => {
 
-    ApiRequestHandler.onGetMyFavoriteVerses = (nodeRequest, nodeResponse) => {
+        //DB.getFavoriteVerses(nodeRequest.user.username,getOnDbResponseCallback(nodeResponse) );
+        let response;
+        try {
+            response = await DB.getFavoriteVerses(nodeRequest.user.username);
 
-        DB.getFavoriteVerses(nodeRequest.user.username,getOnDbResponseCallback(nodeResponse) );
+            sendResponse(nodeResponse, response);
 
+        } catch (error) {
+            nodeResponse.send(401, error);
+        }
+
+    };
+
+    function sendResponse(nodeResponse, content) {
+        nodeResponse.set("Content-Type", "application/json");
+        nodeResponse.send(content);
     }
 
 
