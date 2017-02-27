@@ -19,5 +19,8 @@ $ node server.js
 
 and proceed to localhost:3500
 
+login:
+username/nombre de usuario:samy
+password:12345
 
 
