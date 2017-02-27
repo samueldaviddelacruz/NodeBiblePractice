@@ -1,4 +1,5 @@
 const http = require('http');
+const port = (process.env.PORT || 5000);
 const request = require("request");
 const express = require('express');
 const app = express();
@@ -21,6 +22,6 @@ auth.init(app);
 controllers.init(app);
 
 const server = http.createServer(app);
-server.listen(3500);
-//server.listen(process.env.PORT, process.env.IP)
+
+server.listen(port);
 
