@@ -1,7 +1,7 @@
 ( (database) =>{
         let promise = require("bluebird");
         var mongodb = promise.promisifyAll(require("mongodb"));
-    var mongoUrl = "mongodb://ingsamy:mega007@ds059519.mongolab.com:59519/mongolabdb";
+    var mongoUrl = "";
 
 
     var theDb = null;
