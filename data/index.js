@@ -1,85 +1,110 @@
-((data) =>{
+(data => {
+  const database = require("./database");
 
-    var database = require("./database");
+  data.getUser = async username => {
+    try {
+      const db = await database.getDb();
 
+      const user = await db.usuarios.findOne({
+        username: username.toUpperCase()
+      });
 
-    data.getUser = async(username) => {
+      return user;
+    } catch (err) {
+      throw err;
+    }
+  };
 
-        let db;
-        try {
-            let user;
-            db = await database.getDb();
+  data.addUser = async user => {
+    try {
+      const db = await database.getDb();
+      return await db.usuarios.insert(user);
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  };
 
-            user = await db.usuarios.findOne({
-                username: username.toUpperCase()
-            });
+  data.addToFavorite = async (username, verseData, next) => {
+    try {
+      const db = await database.getDb();
+      db.usuarios.update(
+        { username: username },
+        { $addToSet: { MyFavoriteVerses: verseData } },
+        next
+      );
+    } catch (err) {
+      next(err);
+    }
+  };
 
-            return user;
-        } catch (err) {
-            throw err;
+  data.removeFromFavorites = async (username, verseData) => {
+    try {
+      const db = await database.getDb();
+      await db.usuarios.update(
+        { username: username },
+        { $pull: { MyFavoriteVerses: verseData } }
+      );
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  };
+
+  data.getFavoriteVerses = async (username, next) => {
+    try {
+      const db = await database.getDb();
+
+      const user = await db.usuarios.findOne(
+        {
+          username: username.toUpperCase()
         }
+      );
+      
+      let verses = []
+      for (const fav of user.MyFavoriteVerses) {
+        const verse = await data.getBibleVerseById(fav.verseId)
+        verses.push(verse)
+      }
+      
+      return verses;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  };
 
-    };
+  data.getBibleBooks = async () => {
+    try {
+      const db = await database.getDb();
 
+      const books = await db.bibleBooks.find({}).toArray();
 
-    data.addUser = async(user) => {
+      return books;
+    } catch (err) {
+      throw err;
+    }
+  };
+  data.getBibleVersesByChapterId = async (id) => {
+    try {
+      const db = await database.getDb();
 
-        let db;
-        try {
-            db = await database.getDb();
-            return await db.usuarios.insert(user);
-        } catch (err) {
-            console.log(err);
-            throw err;
-        }
+      const versesByChapterId = await db.bibleVerses.find({chapterId:id}).toArray();
 
-    };
+      return versesByChapterId;
+    } catch (err) {
+      throw err;
+    }
+  };
+  data.getBibleVerseById = async (id) => {
+    try {
+      const db = await database.getDb();
 
-    data.addToFavorite = async(username, verseData, next) => {
-        let db;
-        try {
-            db = await database.getDb();
-            db.usuarios.update({username: username}, {$addToSet: {MyFavoriteVerses: verseData}}, next);
-        } catch (err) {
-            next(err);
-        }
+      const verse = await db.bibleVerses.findOne({id});
 
-    };
-
-    data.removeFromFavorites = async(username, verseData) => {
-
-        let db;
-        try {
-            db = await database.getDb();
-            await db.usuarios.update({username: username}, {$pull: {MyFavoriteVerses: verseData}});
-        } catch (err) {
-            console.log(err)
-            throw err;
-        }
-
-    };
-
-    data.getFavoriteVerses = async(username, next) => {
-
-        let db;
-        try {
-            db = await database.getDb();
-
-            let verses = db.usuarios.findOne({
-                username: username.toUpperCase()
-            }, {MyFavoriteVerses: 1});
-
-            return verses;
-        } catch (err) {
-            console.log(err)
-            throw err;
-        }
-    };
-
-   
-
-
-
-
-
+      return verse;
+    } catch (err) {
+      throw err;
+    }
+  };
 })(module.exports);

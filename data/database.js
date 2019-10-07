@@ -1,32 +1,43 @@
-( (database) =>{
-        let promise = require("bluebird");
-        var mongodb = promise.promisifyAll(require("mongodb"));
-    var mongoUrl = "";
-
-
-    var theDb = null;
-        database.getDb = async() => {
-        if (!theDb) {
-        //connecto the database
-            let db;
-            try {
-                let db = await mongodb.MongoClient.connect(mongoUrl);
-
-                theDb = {
-                    db: db,
-                    usuarios: db.collection("usuarios")
-                };
-                theDb.usuarios = promise.promisifyAll(theDb.usuarios);
-
-                return theDb;
-            } catch (err) {
-                //next(err, null);
-                throw err;
-            }
-            ;
+(database => {
+  const MongoClient = require("mongodb").MongoClient;
+  const { mongoUrl, dbName } = require("../config/config").mongoDatabase;
+  const promise = require("bluebird");
+  const getMongoDbConnection = async uri => {
+    const promise = new Promise((resolve, reject) => {
+      MongoClient.connect(uri, { useNewUrlParser: true }, function(
+        err,
+        client
+      ) {
+        if (err) {
+          reject(err);
         }
-            return theDb;
-    }
+        resolve(client);
+      });
+    });
+    return promise;
+  };
+  let theDb = null;
+  database.getDb = async () => {
+    if (!theDb) {
+      //connecto the database
+      try {
+        let client = await getMongoDbConnection(mongoUrl);
 
-}
-)(module.exports);
+        theDb = {
+          db: client.db(dbName),
+          usuarios: client.db(dbName).collection("bible-usuarios"),
+          bibleVerses: client.db(dbName).collection("bible_verses"),
+          bibleBooks: client.db(dbName).collection("bible_books")
+        };
+        theDb.usuarios = promise.promisifyAll(theDb.usuarios);
+        theDb.bibleVerses = promise.promisifyAll(theDb.bibleVerses);
+        theDb.bibleBooks = promise.promisifyAll(theDb.bibleBooks);
+        return theDb;
+      } catch (err) {
+        //next(err, null);
+        throw err;
+      }
+    }
+    return theDb;
+  };
+})(module.exports);

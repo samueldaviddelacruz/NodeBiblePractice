@@ -1,19 +1,19 @@
 //'auth/index.js'
 (function(auth) {
-	var data = require('../data');
-	var hasher = require('./hasher');
-	var passport = require("passport");
-    var ViewsRequestHandler = require("../Request Handlers/Views.Handler")
-    var localStrategy = require("passport-local").Strategy;
+	const data = require('../data');
+	const hasher = require('./hasher');
+	const passport = require("passport");
+    const ViewsRequestHandler = require("../Request Handlers/Views.Handler")
+    const localStrategy = require("passport-local").Strategy;
 
 
     async function userVerify(username, password, next) {
 
-        let user;
+        
         try {
-            user = await data.getUser(username);
+            const user = await data.getUser(username.toUpperCase());
 
-            var testHash = hasher.computeHash(password, user.salt);
+            const testHash = hasher.computeHash(password, user.salt);
 
             if (testHash === user.passwordHash) {
 
@@ -34,7 +34,7 @@
 		if (req.isAuthenticated()) {
 			next();
 		} else {
-			res.redirect("/login");
+			res.redirect("/");
 		}
 	};
 
@@ -62,10 +62,10 @@
 			}
 		});
         passport.deserializeUser(async(key, next) => {
-            let user;
+            
 
             try {
-                user = await data.getUser(key);
+                const user = await data.getUser(key);
                 next(null, user);
             } catch (err) {
 
@@ -83,10 +83,10 @@
 
 
         app.post("/register", async(req, res, next) => {
-			var newUser = getNewUserData(req);
-            let user;
+			const newUser = getNewUserData(req);
+            
             try {
-                user = await data.getUser(newUser.username);
+                const user = await data.getUser(newUser.username);
                 if (user) {
 
                     req.flash("registrationError", user.username + "  ya esta en uso");
@@ -95,7 +95,7 @@
                 } else {
 
                     await data.addUser(newUser);
-                    let authFunction = getAuthFunction(req, res);
+                    const authFunction = getAuthFunction(req, res);
                     authFunction(req, res);
                 }
             } catch (err) {
@@ -104,8 +104,8 @@
                 res.redirect("/register")
             }
 		});
-        var getNewUserData = (req)=>{
-            var salt = hasher.createSalt();
+        const getNewUserData = (req)=>{
+            const salt = hasher.createSalt();
             return {
                 name: req.body.name,
                 email: req.body.email,
@@ -114,30 +114,7 @@
                 salt: salt
             };
         };
-        var getOnGetUserCallback = (req, res, next,newUser) =>{
-            return (err,user)=>{
-                if(user){
-
-                    req.flash("registrationError",user.username + "  ya esta en uso" );
-                    res.redirect("/register");
-
-                }else{
-                    data.addUser(newUser, getOnAddUserCallback(req,res,next));
-                }
-            }
-        };
-        var getOnAddUserCallback = (req,res)=> {
-            return (err) => {
-                if (err) {
-                    req.flash("registrationError", "Could Not save User to Database");
-                    res.redirect("/register")
-                }
-                var authFunction = getAuthFunction(req, res);
-                authFunction(req, res);
-
-            }
-        }
-
+       
 
 		app.get('/logout', ViewsRequestHandler.onLogOut);
 
@@ -145,18 +122,18 @@
 
 
 		app.post("/login", (req, res, next) =>{
-            var authFunction = getAuthFunction(req,res);
+            const authFunction = getAuthFunction(req,res);
 			authFunction(req, res, next);
 
 		});
 
 
-        var getAuthFunction = (req,res) =>{
+        const getAuthFunction = (req,res) =>{
 
             return passport.authenticate("local", getOnAuthCallback(req,res));
             
         };
-        var getOnAuthCallback =(req,res) =>{
+        const getOnAuthCallback =(req,res) =>{
             return ViewsRequestHandler.getOnLoginHandler(req,res);
         } 
         

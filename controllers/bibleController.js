@@ -1,10 +1,10 @@
 (function (bibleController) {
     //requires 'index inside of data folder'
-    var ApiRequestHandler = require("../Request Handlers/API.Handler.js")
-    var ViewsRequestHandler = require("../Request Handlers/Views.Handler")
-    var data = require("../data");
-    var auth = require("../auth");
-   // var request = require("request");
+    const ApiRequestHandler = require("../Request Handlers/API.Handler.js")
+    const ViewsRequestHandler = require("../Request Handlers/Views.Handler")
+   
+    const auth = require("../auth");
+   // const request = require("request");
     bibleController.init =  (app) =>{
 
         app.get("/api/books",ApiRequestHandler.onGetApiBooks);

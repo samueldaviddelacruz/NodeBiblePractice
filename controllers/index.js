@@ -1,6 +1,6 @@
 ( (controllers) =>{
   
-    var bibleController = require("./bibleController")
+    const bibleController = require("./bibleController")
     controllers.init =  (app) =>{
         
         bibleController.init(app);

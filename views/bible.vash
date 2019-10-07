@@ -25,18 +25,13 @@ Libros Biblicos:
 
          <select  ng-model="bible.selectedBook" ng-options="book.name for book in bible.books |filter:bible.searchBook" class="form-control"></select><br>
 
-
-
-
      </div>
 
 
 <div>
 
 
-    <label ng-show="bible.selectedBook"> Buscar palabra en libro :<input ng-model="bible.searchTextInBook" class="form-control">
-        <a href="#" ng-click="bible.searchWholeBook()" class="btn btn-success">Buscar!</a>
-    </label>
+   
 
     <div class="list-group">
         <div ng-show="bible.IsOnFullSearch">
@@ -44,17 +39,25 @@ Libros Biblicos:
                 <i class="fa fa-circle-o-notch fa-spin"></i> Loading...
             </div>
         </div>
-        <a href="#" ng-hide="bible.IsOnFullSearch" ng-repeat="chapter in bible.selectedBook.chapters|filter:bible.filterChapter" ng-click="bible.ListVerses(chapter)" class="list-group-item">
-            {{chapter.chapter}}
-        </a>
+
+        <label>
+        Capítulo:
+        
+        </label>
+        <select  ng-model="bible.selectedChapter"  ng-hide="bible.IsOnFullSearch"  ng-options="chapter.chapter for chapter in bible.selectedBook.chapters  |filter:bible.filterChapter"  ng-click="bible.ListVerses()" class="form-control">
+        
+        </select>
     </div>
+     <label ng-show="bible.selectedBook"> Buscar palabra en libro :<input ng-model="bible.searchTextInBook" class="form-control">
+        <a href="#" ng-click="bible.searchWholeBook()" class="btn btn-success">Buscar!</a>
+    </label>
 </div>
 
  </div>
 
 
 
-<div class="col-md-6 container" style=" overflow-y: auto; max-height: 800px;">
+<div class="col-md-8 container" style=" overflow-y: auto; max-height: 800px;">
 <div ng-show="bible.IsLoadingVerses">
     <div class="text-center">
         <i class="fa fa-circle-o-notch fa-spin"></i> Loading...
