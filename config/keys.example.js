@@ -1,6 +1,6 @@
 module.exports = {
-  mongoDatabase : {
+  mongoDatabase: {
     mongoUrl: "",
-    dbName:""
+    dbName: ""
   }
 };
