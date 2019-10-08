@@ -78,7 +78,7 @@
     try {
       const db = await database.getDb();
 
-      const books = await db.bibleBooks.find({}).toArray();
+      const books = await db.bibleBooks.find({},{ projection: { _id: 0 } }).toArray();
 
       return books;
     } catch (err) {
@@ -89,7 +89,7 @@
     try {
       const db = await database.getDb();
 
-      const versesByChapterId = await db.bibleVerses.find({chapterId:id}).toArray();
+      const versesByChapterId = await db.bibleVerses.find({chapterId:id},{ projection: { _id: 0 } }).toArray();
 
       return versesByChapterId;
     } catch (err) {
@@ -100,7 +100,7 @@
     try {
       const db = await database.getDb();
 
-      const verse = await db.bibleVerses.findOne({id});
+      const verse = await db.bibleVerses.findOne({id},{ projection: { _id: 0 } });
 
       return verse;
     } catch (err) {
