@@ -12,6 +12,8 @@
         app.get("/api/verses/:chapterId", ApiRequestHandler.onGetApiVerses);
         
         app.get("/api/getSingleVerse/:verseId", ApiRequestHandler.onGetApiSingleVerse);
+        app.get("/api/verses/:verseId", ApiRequestHandler.onGetApiSingleVerse);
+
 
         app.get("/api/getMyVerses", auth.ensureAuthenticated,ApiRequestHandler.onGetMyFavoriteVerses);
 
