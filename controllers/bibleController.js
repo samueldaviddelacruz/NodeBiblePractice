@@ -8,11 +8,23 @@
     bibleController.init =  (app) =>{
 
         app.get("/api/books",ApiRequestHandler.onGetApiBooks);
+        app.get("/api/books/:bookId",ApiRequestHandler.onGetApiBook);
         
-        app.get("/api/verses/:chapterId", ApiRequestHandler.onGetApiVerses);
-        
-        app.get("/api/getSingleVerse/:verseId", ApiRequestHandler.onGetApiSingleVerse);
+        app.get(`/api/books/:bookId/verses/:verseRange(\\d+)`,ApiRequestHandler.onGetVersesByChapterNumber);//done
+
+        app.get(`/api/books/:bookId/verses/:verseRange(\\d+:\\d+)`,ApiRequestHandler.onGetVerseByChapterAndVerseNumber); //done
+
+        app.get(`/api/books/:bookId/verses/:verseRange(\\d+-\\d+:\\d+)`,ApiRequestHandler.onGetVersesFromChapterUntilVerse);//done
+        app.get(`/api/books/:bookId/verses/:verseRange(\\d+:\\d+-\\d+)`,ApiRequestHandler.onGetVersesFromVerseUntilChapter);//done
+        app.get(`/api/books/:bookId/verses/:verseRange(\\d:\\d-\\d:\\d)`,ApiRequestHandler.onGetVersesFromVerseToVerse);
+        //app.get(`/api/books/:bookId/verses/:verseRange(\d-\d)`,ApiRequestHandler.onGetVersesFromChapterToChapter);
+
+        app.get("/api/verses/:chapterId", ApiRequestHandler.onGetApiVersesByChapterId);
         app.get("/api/verses/:verseId", ApiRequestHandler.onGetApiSingleVerse);
+
+
+        app.get("/api/getSingleVerse/:verseId", ApiRequestHandler.onGetApiSingleVerse);
+        
 
 
         app.get("/api/getMyVerses", auth.ensureAuthenticated,ApiRequestHandler.onGetMyFavoriteVerses);

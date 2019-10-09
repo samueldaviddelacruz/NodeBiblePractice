@@ -4,18 +4,102 @@
 
 const DB = require("../data");
 
-
 (ApiRequestHandler => {
   ApiRequestHandler.onGetApiBooks = async (nodeRequest, nodeResponse) => {
     const response = await DB.getBibleBooks();
     sendResponse(nodeResponse, response);
   };
 
-  ApiRequestHandler.onGetApiVerses = async (nodeRequest, nodeResponse) => {
-    const response = await DB.getBibleVersesByChapterId(
-      nodeRequest.params.chapterId
-    );
+  ApiRequestHandler.onGetApiBook = async (nodeRequest, nodeResponse) => {
+    const response = await DB.getBibleBookById(nodeRequest.params.bookId);
     sendResponse(nodeResponse, response);
+  };
+  ApiRequestHandler.onGetVersesByChapterNumber = async (
+    nodeRequest,
+    nodeResponse
+  ) => {
+    try {
+      const response = await DB.getVersesByChapterNumber(
+        nodeRequest.params.bookId,
+        nodeRequest.params.verseRange
+      );
+      sendResponse(nodeResponse, response);
+    } catch (error) {
+      nodeResponse.send(500, error);
+    }
+  };
+  ApiRequestHandler.onGetVerseByChapterAndVerseNumber = async (
+    nodeRequest,
+    nodeResponse
+  ) => {
+    try {
+      const response = await DB.getVerseByChapterAndVerseNumber(
+        nodeRequest.params.bookId,
+        nodeRequest.params.verseRange
+      );
+      sendResponse(nodeResponse, response);
+    } catch (error) {
+      nodeResponse.send(500, error);
+    }
+  };
+  ApiRequestHandler.onGetVersesFromVerseUntilChapter = async (
+    nodeRequest,
+    nodeResponse
+  ) => {
+    try {
+      const response = await DB.getVersesFromVerseUntilChapter(
+        nodeRequest.params.bookId,
+        nodeRequest.params.verseRange
+      );
+      sendResponse(nodeResponse, response);
+    } catch (error) {
+      nodeResponse.send(500, error);
+    }
+  };
+
+  ApiRequestHandler.onGetVersesFromChapterUntilVerse = async (
+    nodeRequest,
+    nodeResponse
+  ) => {
+    try {
+      const response = await DB.getVersesFromChapterUntilVerse(
+        nodeRequest.params.bookId,
+        nodeRequest.params.verseRange
+      );
+      sendResponse(nodeResponse, response);
+    } catch (error) {
+      nodeResponse.send(500, error);
+    }
+  };
+
+
+  ApiRequestHandler.onGetVersesFromVerseToVerse = async (
+    nodeRequest,
+    nodeResponse
+  ) => {
+    try {
+      const response = await DB.getVersesFromVerseToVerse(
+        nodeRequest.params.bookId,
+        nodeRequest.params.verseRange
+      );
+      sendResponse(nodeResponse, response);
+    } catch (error) {
+      nodeResponse.send(500, error);
+    }
+  };
+
+  ApiRequestHandler.onGetApiVersesByChapterId = async (
+    nodeRequest,
+    nodeResponse
+  ) => {
+    try {
+      const response = await DB.getBibleVersesByChapterId(
+        nodeRequest.params.chapterId
+      );
+      sendResponse(nodeResponse, response);
+    } catch (error) {
+      nodeResponse.send(500, error);
+    }
   };
 
   ApiRequestHandler.onGetApiSingleVerse = async (nodeRequest, nodeResponse) => {
@@ -56,8 +140,8 @@ const DB = require("../data");
   ) => {
     try {
       const response = await DB.getFavoriteVerses(nodeRequest.user.username);
-//{"_id":"5d9b4cdca89d27129d32f0b9","name":"Samuel De La Cruz","email":"test@test.com","username":"TEST","passwordHash":"10e86e1747fee11efd40bb4894759b6c76a08834","salt":"56703e29","MyFavoriteVerses":[{"verseId":"spa-RVR1960:Gen.1.1","reference":"Génesis 1:1"}]}
-        
+      //{"_id":"5d9b4cdca89d27129d32f0b9","name":"Samuel De La Cruz","email":"test@test.com","username":"TEST","passwordHash":"10e86e1747fee11efd40bb4894759b6c76a08834","salt":"56703e29","MyFavoriteVerses":[{"verseId":"spa-RVR1960:Gen.1.1","reference":"Génesis 1:1"}]}
+
       sendResponse(nodeResponse, response);
     } catch (error) {
       nodeResponse.send(401, error);
