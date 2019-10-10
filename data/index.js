@@ -110,7 +110,7 @@
       }
       return await data.getBibleVersesByChapterId(chapter.id);
     } catch (err) {
-      throw err;
+      return []
     }
   };
 
@@ -124,89 +124,164 @@
 
       return result || {};
     } catch (err) {
-      throw err;
+      return []
     }
   };
 
   data.getVersesFromChapterUntilVerse = async (bookId, verseRange) => {
     try {
-      const [startChapterNumber, endChapterAndVerse] = verseRange.split("-");
-      const [endChapterNumber, endVerseNumber] = endChapterAndVerse.split(":");
-
-      const book = await data.getBibleBookById(bookId);
-      let chaptersMap = book.chapters.reduce((acc, nextVal) => {
-        return { ...acc, [nextVal.chapter]: nextVal };
-      }, {});
-      const startChapter = chaptersMap[`${startChapterNumber}`];
-      const endChapter = chaptersMap[`${endChapterNumber}`];
-
+      let [startChapterNumber, endChapterAndVerse] = verseRange.split("-");
+      let [endChapterNumber, endVerseNumber] = endChapterAndVerse.split(":");
+      startChapterNumber = +startChapterNumber;
+      endChapterNumber = +endChapterNumber;
+      endVerseNumber = +endVerseNumber;
+      const { startChapter, endChapter } = await getStartAndEndChapters(
+        bookId,
+        startChapterNumber,
+        endChapterNumber
+      );
+      const chaptersMap = await getBookChaptersMap(bookId);
+      const result = [];
       if (startChapter && endChapter) {
-        const startChapterVerses = await data.getBibleVersesByChapterId(
-          startChapter.id
+        let chapterIdList = getChapterIdList(
+          startChapterNumber,
+          endChapterNumber,
+          chaptersMap
         );
+
+        const verses = await findManyVersesByChapterIds(chapterIdList);
+        result.push(...verses);
         const endChapterVerses = await data.getBibleVersesByChapterId(
           endChapter.id
         );
-        const filteredVerses = endChapterVerses.filter((v, idx) => {
-          let indx = idx + 1;
-          return indx <= endVerseNumber;
-        });
 
-        return [...startChapterVerses, ...filteredVerses];
+        result.push(...endChapterVerses.slice(0, endVerseNumber));
+        return result;
       }
     } catch (err) {
-      throw err;
+      console.log(err);
+      return []
     }
   };
   data.getVersesFromVerseUntilChapter = async (bookId, verseRange) => {
     try {
-      const [startChapterAndVerse, endChapter] = verseRange.split("-");
-      const [startChapterNumber, startVerseNumber] = startChapterAndVerse.split(
+      let [startChapterAndVerse, endChapterNumber] = verseRange.split("-");
+      let [startChapterNumber, startVerseNumber] = startChapterAndVerse.split(
         ":"
       );
-
-      const book = await data.getBibleBookById(bookId);
-      const bookChapters = book.chapters;
+      endChapterNumber = +endChapterNumber;
+      startChapterNumber = +startChapterNumber;
+      startVerseNumber = +startVerseNumber;
       let result = [];
+      let chaptersMap = await getBookChaptersMap(bookId);
+      const { startChapter, endChapter } = await getStartAndEndChapters(
+        bookId,
+        startChapterNumber,
+        endChapterNumber
+      );
 
-      const chapterIsWithingRange = +endChapter <= bookChapters.length;
-      if (chapterIsWithingRange) {
-        let chaptersMap = bookChapters.reduce((acc, nextVal) => {
-          return { ...acc, [nextVal.chapter]: nextVal };
-        }, {});
-
+      if (startChapter && endChapter) {
         const firstBatchOfVerses = await data.getBibleVersesByChapterId(
-          chaptersMap[startVerseNumber].id
+          startChapter.id
         );
-        const filteredStartingVerses = getVersesStartingAt(
-          firstBatchOfVerses,
-          startVerseNumber
-        );
-
-        result.push(...filteredStartingVerses);
-        let chapterIdList = [];
-        for (let i = +startChapterNumber + 1; i < +endChapter; i++) {
-          const chapter = chaptersMap[`${i}`];
-          if (chapter) {
-            chapterIdList.push(chapter.id);
-          }
-        }
        
-        const db = await database.getDb();
+        
 
-        const verses = await db.bibleVerses
-          .find(
-            { chapterId: { $in: chapterIdList } },
-            { projection: { _id: 0 } }
-          )
-          .toArray();
+        result.push(...firstBatchOfVerses.slice(startVerseNumber - 1));
+
+        let chapterIdList = getChapterIdList(
+          startChapterNumber+1,
+          endChapterNumber,
+          chaptersMap
+        );
+
+        const verses = await findManyVersesByChapterIds(chapterIdList);
         result.push(...verses);
+
+        return result
       }
 
-      return result;
+      return [];
     } catch (err) {
+      console.log(err);
+      return []
+    }
+    
+  };
+
+  data.getVersesFromVerseToVerse = async (bookId, verseRange) => {
+    try {
+      let [startChapterAndVerse, endChapterAndVerse] = verseRange.split("-");
+      let [startChapterNumber, startVerseNumber] = startChapterAndVerse.split(
+        ":"
+      );
+      let [endChapterNumber, endVerseNumber] = endChapterAndVerse.split(":");
+      startChapterNumber = +startChapterNumber;
+      startVerseNumber = +startVerseNumber;
+      endChapterNumber = +endChapterNumber;
+      endVerseNumber = +endVerseNumber;
+      const { startChapter, endChapter } = await getStartAndEndChapters(
+        bookId,
+        startChapterNumber,
+        endChapterNumber
+      );
+
+      const chaptersMap = await getBookChaptersMap(bookId);
+
+      const result = [];
+      if (startChapter && endChapter) {
+        const startChapterVerses = await data.getBibleVersesByChapterId(
+          startChapter.id
+        );
+        result.push(...startChapterVerses.slice(startVerseNumber - 1));
+
+        let chapterIdList = getChapterIdList(
+          startChapterNumber + 1,
+          endChapterNumber - 1,
+          chaptersMap
+        );
+
+        const verses = await findManyVersesByChapterIds(chapterIdList);
+        result.push(...verses);
+        const endChapterVerses = await data.getBibleVersesByChapterId(
+          endChapter.id
+        );
+
+        result.push(...endChapterVerses.slice(0, endVerseNumber));
+        return result;
+      }
+    } catch (err) {
+      console.log(err);
+      return []
+    }
+  };
+  data.getVersesFromChapterToChapter = async (bookId, verseRange) => {
+    try {
+      let [startChapterNumber, endChapterNumber] = verseRange.split("-");
+      startChapterNumber = +startChapterNumber;
+      endChapterNumber = +endChapterNumber;
+      const { startChapter, endChapter } = await getStartAndEndChapters(
+        bookId,
+        startChapterNumber,
+        endChapterNumber
+      );
+      const chaptersMap = await getBookChaptersMap(bookId);
+      const result = [];
+      if (startChapter && endChapter) {
+        let chapterIdList = getChapterIdList(
+          startChapterNumber,
+          endChapterNumber,
+          chaptersMap
+        );
+        const verses = await findManyVersesByChapterIds(chapterIdList);
+        result.push(...verses);
+        return result;
+      }
+    } catch (err) {
+      console.log(err);
       throw err;
     }
+    return [];
   };
 
   data.getBibleVersesByChapterId = async id => {
@@ -236,10 +311,41 @@
       throw err;
     }
   };
+
+  function getChapterIdList(startChapterNumber, endChapter, chaptersMap) {
+    const chapterIdList = [];
+    console.log(endChapter);
+    for (let i = +startChapterNumber; i <= +endChapter; i++) {
+      const chapter = chaptersMap[`${i}`];
+      if (chapter) {
+        chapterIdList.push(chapter.id);
+      }
+    }
+    console.log(chapterIdList);
+    return chapterIdList;
+  }
+
+  async function findManyVersesByChapterIds(chapterIdList) {
+    const db = await database.getDb();
+    return await db.bibleVerses
+      .find({ chapterId: { $in: chapterIdList } }, { projection: { _id: 0 } })
+      .toArray();
+  }
+
+  async function getBookChaptersMap(bookId) {
+    const book = await data.getBibleBookById(bookId);
+    return book.chapters.reduce((acc, nextVal) => {
+      return { ...acc, [nextVal.chapter]: nextVal };
+    }, {});
+  }
+  async function getStartAndEndChapters(
+    bookId,
+    startChapterNumber,
+    endChapterNumber
+  ) {
+    const chaptersMap = await getBookChaptersMap(bookId);
+    const startChapter = chaptersMap[`${startChapterNumber}`];
+    const endChapter = chaptersMap[`${endChapterNumber}`];
+    return { startChapter, endChapter };
+  }
 })(module.exports);
-function getVersesStartingAt(verses, startVerseNumber) {
-  return verses.filter((v, idx) => {
-    let indx = idx + 1;
-    return indx >= startVerseNumber;
-  });
-}

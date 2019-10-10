@@ -10,14 +10,17 @@
         app.get("/api/books",ApiRequestHandler.onGetApiBooks);
         app.get("/api/books/:bookId",ApiRequestHandler.onGetApiBook);
         
-        app.get(`/api/books/:bookId/verses/:verseRange(\\d+)`,ApiRequestHandler.onGetVersesByChapterNumber);//done
+        app.get(`/api/books/:bookId/verses/:verseRange(\\d+)`,ApiRequestHandler.onGetVersesByChapterNumber);
+        
+        app.get(`/api/books/:bookId/verses/:verseRange(\\d+:\\d+)`,ApiRequestHandler.onGetVerseByChapterAndVerseNumber); 
 
-        app.get(`/api/books/:bookId/verses/:verseRange(\\d+:\\d+)`,ApiRequestHandler.onGetVerseByChapterAndVerseNumber); //done
+        app.get(`/api/books/:bookId/verses/:verseRange(\\d+-\\d+:\\d+)`,ApiRequestHandler.onGetVersesFromChapterUntilVerse);
+        
+        app.get(`/api/books/:bookId/verses/:verseRange(\\d+:\\d+-\\d+)`,ApiRequestHandler.onGetVersesFromVerseUntilChapter);
 
-        app.get(`/api/books/:bookId/verses/:verseRange(\\d+-\\d+:\\d+)`,ApiRequestHandler.onGetVersesFromChapterUntilVerse);//done
-        app.get(`/api/books/:bookId/verses/:verseRange(\\d+:\\d+-\\d+)`,ApiRequestHandler.onGetVersesFromVerseUntilChapter);//done
-        app.get(`/api/books/:bookId/verses/:verseRange(\\d:\\d-\\d:\\d)`,ApiRequestHandler.onGetVersesFromVerseToVerse);
-        //app.get(`/api/books/:bookId/verses/:verseRange(\d-\d)`,ApiRequestHandler.onGetVersesFromChapterToChapter);
+        app.get(`/api/books/:bookId/verses/:verseRange(\\d+:\\d+-\\d+:\\d+)`,ApiRequestHandler.onGetVersesFromVerseToVerse);
+        
+        app.get(`/api/books/:bookId/verses/:verseRange(\\d+-\\d+)`,ApiRequestHandler.onGetVersesFromChapterToChapter);
 
         app.get("/api/verses/:chapterId", ApiRequestHandler.onGetApiVersesByChapterId);
         app.get("/api/verses/:verseId", ApiRequestHandler.onGetApiSingleVerse);

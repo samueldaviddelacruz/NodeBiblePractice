@@ -88,6 +88,21 @@ const DB = require("../data");
     }
   };
 
+  ApiRequestHandler.onGetVersesFromChapterToChapter = async (
+    nodeRequest,
+    nodeResponse
+  ) => {
+    try {
+      const response = await DB.getVersesFromChapterToChapter(
+        nodeRequest.params.bookId,
+        nodeRequest.params.verseRange
+      );
+      sendResponse(nodeResponse, response);
+    } catch (error) {
+      nodeResponse.send(500, error);
+    }
+  }; 
+
   ApiRequestHandler.onGetApiVersesByChapterId = async (
     nodeRequest,
     nodeResponse
