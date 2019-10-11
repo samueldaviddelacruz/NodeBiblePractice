@@ -314,7 +314,7 @@
 
   function getChapterIdList(startChapterNumber, endChapter, chaptersMap) {
     const chapterIdList = [];
-    console.log(endChapter);
+    
     for (let i = +startChapterNumber; i <= +endChapter; i++) {
       const chapter = chaptersMap[`${i}`];
       if (chapter) {
