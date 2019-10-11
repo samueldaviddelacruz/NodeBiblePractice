@@ -122,7 +122,7 @@
       const verseId = `${chapter.id}.${verseNumber}`;
       const result = await data.getBibleVerseById(verseId);
 
-      return result || {};
+      return [result];
     } catch (err) {
       return []
     }
